@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 const SOLO_SUGGESTIONS = ['Reading', 'Gaming', 'Gym', 'Cycling', 'Cooking', 'Music', 'Running', 'Football'];
