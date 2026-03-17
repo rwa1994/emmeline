@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PenLine, MessageCircle, ChevronRight, Droplets, History } from 'lucide-react';
+import { PenLine, MessageCircle, ChevronRight, Droplets, History, Users } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { getPhase } from '../../lib/phases';
@@ -155,6 +155,21 @@ export default function Dashboard() {
         <div>
           <p className="text-sm font-medium text-em-text">Add period history</p>
           <p className="text-xs text-em-muted mt-0.5">Help Em spot your patterns</p>
+        </div>
+        <ChevronRight size={16} className="text-em-muted ml-auto" />
+      </Link>
+
+      {/* Partner access */}
+      <Link
+        to="/partner-control"
+        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
+      >
+        <div className="w-9 h-9 rounded-xl bg-em-lavender-light flex items-center justify-center flex-shrink-0">
+          <Users size={16} className="text-em-lavender-dark" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-em-text">Partner access</p>
+          <p className="text-xs text-em-muted mt-0.5">Invite and manage what they can see</p>
         </div>
         <ChevronRight size={16} className="text-em-muted ml-auto" />
       </Link>
