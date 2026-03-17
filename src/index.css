@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  /* Emmeline colour palette */
+  --color-em-cream: #FDF8F3;
+  --color-em-rose: #C49A9E;
+  --color-em-rose-light: #EDD5D7;
+  --color-em-rose-dark: #9E6F73;
+  --color-em-sage: #8FAF88;
+  --color-em-sage-light: #D4E8D1;
+  --color-em-sage-dark: #5E8057;
+  --color-em-blush: #F0C4CA;
+  --color-em-blush-light: #FAE8EB;
+  --color-em-lavender: #B0A8CE;
+  --color-em-lavender-light: #DDD9EE;
+  --color-em-lavender-dark: #7A6FA8;
+  --color-em-text: #2E1F1F;
+  --color-em-muted: #9A8080;
+  --color-em-border: #E8DADA;
+  --color-em-surface: #FFFFFF;
+
+  /* Typography */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: #FDF8F3;
+  color: #2E1F1F;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+input[type="range"] {
+  accent-color: #C49A9E;
+}
