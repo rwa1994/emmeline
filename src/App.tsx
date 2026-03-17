@@ -9,6 +9,7 @@ import Calendar from './screens/her/Calendar';
 import Log from './screens/her/Log';
 import PhaseGuide from './screens/her/PhaseGuide';
 import Chat from './screens/her/Chat';
+import ImportHistory from './screens/her/ImportHistory';
 
 function App() {
   const { user, profile, loading } = useAuth();
@@ -43,6 +44,7 @@ function App() {
           <Route path="log" element={<Log />} />
           <Route path="guide" element={<PhaseGuide />} />
           <Route path="chat" element={<Chat />} />
+          <Route path="history" element={<ImportHistory />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

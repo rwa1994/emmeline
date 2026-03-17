@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PenLine, MessageCircle, ChevronRight, Droplets } from 'lucide-react';
+import { PenLine, MessageCircle, ChevronRight, Droplets, History } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { getPhase } from '../../lib/phases';
@@ -120,7 +120,7 @@ export default function Dashboard() {
       </div>
 
       {/* Quick actions */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 mb-3">
         <Link
           to="/log"
           className="bg-em-surface rounded-3xl p-5 border border-em-border flex flex-col gap-3"
@@ -144,6 +144,20 @@ export default function Dashboard() {
           </div>
         </Link>
       </div>
+      {/* Period history */}
+      <Link
+        to="/history"
+        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
+      >
+        <div className="w-9 h-9 rounded-xl bg-em-rose-light flex items-center justify-center flex-shrink-0">
+          <History size={16} className="text-em-rose-dark" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-em-text">Add period history</p>
+          <p className="text-xs text-em-muted mt-0.5">Help Em spot your patterns</p>
+        </div>
+        <ChevronRight size={16} className="text-em-muted ml-auto" />
+      </Link>
     </div>
   );
 }
