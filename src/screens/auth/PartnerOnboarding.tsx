@@ -124,7 +124,7 @@ export default function PartnerOnboarding() {
               <p className="text-em-muted text-sm mb-2">Step 2 of 3</p>
               <h2 className="font-heading text-4xl text-em-text leading-tight">Tell me about you.</h2>
               <p className="text-em-muted mt-3 leading-relaxed">
-                This helps me make suggestions that actually fit your life — not just generic advice.
+                This helps me make suggestions that actually fit your life, not just generic advice.
               </p>
             </div>
 

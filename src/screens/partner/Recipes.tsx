@@ -16,7 +16,7 @@ export default function Recipes() {
     <div className="px-6 pt-12 pb-6">
       <h1 className="font-heading text-4xl text-em-text mb-2">Recipe ideas</h1>
       <p className="text-em-muted text-sm mb-6">
-        Phase-appropriate ideas for what to cook — things her body will genuinely appreciate right now.
+        Phase-appropriate ideas for what to cook. Things her body will genuinely appreciate right now.
       </p>
 
       {/* Current phase */}

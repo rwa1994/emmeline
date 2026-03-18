@@ -22,7 +22,7 @@ export default function Activities() {
     <div className="px-6 pt-12 pb-6">
       <h1 className="font-heading text-4xl text-em-text mb-2">Activities</h1>
       <p className="text-em-muted text-sm mb-6">
-        What to do together and what to do solo — tailored to her current phase.
+        What to do together and what to do solo, tailored to her current phase.
       </p>
 
       {/* Together */}
@@ -57,7 +57,7 @@ export default function Activities() {
       <section>
         <div className="flex items-center gap-2 mb-3">
           <User size={14} className="text-em-muted" />
-          <p className="text-xs font-medium text-em-muted uppercase tracking-widest">Give her space — do your own thing</p>
+          <p className="text-xs font-medium text-em-muted uppercase tracking-widest">Give her space. Do your own thing.</p>
         </div>
         <div className="space-y-2.5">
           {solo.map((activity, i) => (

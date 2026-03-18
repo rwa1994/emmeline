@@ -66,7 +66,7 @@ export default function Chat() {
         {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: "I'm having a little trouble at the moment — please try again in a moment.",
+          content: "I'm having a little trouble at the moment. Please try again in a moment.",
           created_at: new Date().toISOString(),
         },
       ]);
@@ -151,7 +151,7 @@ export default function Chat() {
           </button>
         </div>
         <div className="flex items-center justify-between mt-2 px-1">
-          <p className="text-[10px] text-em-muted">Em is not a medical professional — always see a GP for medical concerns.</p>
+          <p className="text-[10px] text-em-muted">Em is not a medical professional. Always see a GP for medical concerns.</p>
           {messages.length > 1 && (
             <Link
               to="/log"

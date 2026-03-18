@@ -57,7 +57,7 @@ export default function Onboarding() {
                 Hi, I'm Em.
               </h2>
               <p className="text-em-muted mt-3 leading-relaxed">
-                I'm here to support you through your cycle — with knowledge, care, and a little warmth. What can I call you?
+                I'm here to support you through your cycle, with knowledge, care, and a little warmth. What can I call you?
               </p>
             </div>
             <input
@@ -112,7 +112,7 @@ export default function Onboarding() {
               onClick={() => { setLastPeriod(''); setStep(3); }}
               className="w-full py-2 text-sm text-em-muted hover:text-em-text transition-colors"
             >
-              I'm not sure — skip this for now
+              Not sure, skip for now
             </button>
             <button onClick={() => setStep(1)} className="w-full text-em-muted text-sm py-2">
               Back
