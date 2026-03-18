@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PenLine, MessageCircle, ChevronRight, Droplets, Pill, BookOpen } from 'lucide-react';
+import { PenLine, MessageCircle, ChevronRight, Droplets, Pill } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { getPhase } from '../../lib/phases';
