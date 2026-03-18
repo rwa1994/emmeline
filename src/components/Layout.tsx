@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, NavLink, Link } from 'react-router-dom';
-import { Home, Calendar, PenLine, BookOpen, MessageCircle, Menu, X, History, FileText, Users } from 'lucide-react';
+import { Home, Calendar, PenLine, BookOpen, MessageCircle, Menu, X, History, FileText, Users, Settings } from 'lucide-react';
 
 export default function Layout() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -43,6 +43,7 @@ export default function Layout() {
             <MenuItem to="/history" icon={<History size={18} />} label="Period history" description="Help Em spot your patterns" onClick={() => setMenuOpen(false)} />
             <MenuItem to="/report" icon={<FileText size={18} />} label="GP Report" description="Generate a summary for your doctor" onClick={() => setMenuOpen(false)} />
             <MenuItem to="/partner-control" icon={<Users size={18} />} label="Partner access" description="Invite and manage what they can see" onClick={() => setMenuOpen(false)} />
+            <MenuItem to="/settings" icon={<Settings size={18} />} label="Settings" description="Update your details and sign out" onClick={() => setMenuOpen(false)} />
           </div>
         </div>
       )}

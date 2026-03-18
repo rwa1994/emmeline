@@ -20,6 +20,8 @@ import GPReport from './screens/her/GPReport';
 import Journal from './screens/her/Journal';
 import HerRecipes from './screens/her/HerRecipes';
 import Landing from './screens/Landing';
+import Settings from './screens/her/Settings';
+import PartnerSettings from './screens/partner/Settings';
 import Feedback from './screens/Feedback';
 import Admin from './screens/Admin';
 import PartnerDashboard from './screens/partner/Dashboard';
@@ -87,6 +89,7 @@ function App() {
           <Route path="report" element={<GPReport />} />
           <Route path="journal" element={<Journal />} />
           <Route path="her-recipes" element={<HerRecipes />} />
+          <Route path="settings" element={<Settings />} />
           <Route path="feedback" element={<Feedback />} />
           <Route path="admin" element={<Admin />} />
         </Route>
@@ -105,6 +108,7 @@ function App() {
           <Route path="guide" element={<TodayGuide />} />
           <Route path="recipes" element={<Recipes />} />
           <Route path="activities" element={<Activities />} />
+          <Route path="settings" element={<PartnerSettings />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />
