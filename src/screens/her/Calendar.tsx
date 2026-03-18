@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getPhase, phases } from '../../lib/phases';
 import { supabase } from '../../lib/supabase';
-import { getPhaseForDay } from '../../lib/cycleUtils';
+import { getPhaseForDay, parseLocalDate, formatLocalDate, getPhaseRanges } from '../../lib/cycleUtils';
 import type { CyclePhase } from '../../types';
 
 interface DayDetail {
@@ -28,7 +28,8 @@ export default function Calendar() {
   const cycleLength = profile?.cycle_length ?? 28;
   const periodLength = profile?.period_length ?? 5;
   const periodStartStr = periodOverride ?? profile?.last_period_start ?? null;
-  const lastPeriodStart = periodStartStr ? new Date(periodStartStr) : null;
+  const lastPeriodStart = periodStartStr ? parseLocalDate(periodStartStr) : null;
+  const phaseRanges = getPhaseRanges(periodLength, cycleLength);
 
   function getPhaseForDate(date: Date): { phase: CyclePhase; dayOfCycle: number } | null {
     if (!lastPeriodStart) return null;
@@ -48,7 +49,7 @@ export default function Calendar() {
   async function setPeriodStartDate(date: Date) {
     if (!user) return;
     setUpdatingPeriod(true);
-    const dateStr = date.toISOString().split('T')[0];
+    const dateStr = formatLocalDate(date);
     await supabase.from('profiles').update({ last_period_start: dateStr }).eq('id', user.id);
     setPeriodOverride(dateStr);
     setSelectedDay(null);
@@ -120,12 +121,12 @@ export default function Calendar() {
         })}
       </div>
 
-      {/* Legend */}
+      {/* Legend — dynamic ranges based on user's cycle/period length */}
       <div className="mt-6 grid grid-cols-2 gap-y-2.5 gap-x-4">
         {phases.map(p => (
           <div key={p.phase} className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-            <span className="text-xs text-em-muted">{p.name} · {p.dayRange}</span>
+            <span className="text-xs text-em-muted">{p.name} · {phaseRanges[p.phase]}</span>
           </div>
         ))}
       </div>

@@ -16,6 +16,49 @@ import type { CyclePhase } from '../types';
  *   - Follicular = between end of period and start of ovulatory window (variable)
  *   - Menstrual = user's reported period length
  */
+/**
+ * Parse a YYYY-MM-DD date string as local midnight, not UTC.
+ * new Date('2024-03-15') treats string as UTC which causes off-by-one
+ * errors in timezones ahead of UTC (e.g. Australia).
+ */
+export function parseLocalDate(dateStr: string): Date {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+/**
+ * Format a Date as YYYY-MM-DD in local time (not UTC).
+ * toISOString() converts to UTC first which can shift the date.
+ */
+export function formatLocalDate(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+/**
+ * Compute dynamic phase day ranges for a given cycle/period length.
+ * Returns a map of phase -> display string e.g. "Days 6–17"
+ */
+export function getPhaseRanges(
+  periodLength: number,
+  cycleLength: number,
+): Record<CyclePhase, string> {
+  const lutealStart = cycleLength - 11;
+  const ovulatoryStart = Math.max(periodLength + 1, lutealStart - 4);
+  const follicularEnd = ovulatoryStart - 1;
+
+  return {
+    menstrual:  `Days 1–${periodLength}`,
+    follicular: follicularEnd >= periodLength + 1
+      ? `Days ${periodLength + 1}–${follicularEnd}`
+      : `Days ${periodLength + 1}`,
+    ovulatory:  `Days ${ovulatoryStart}–${lutealStart - 1}`,
+    luteal:     `Days ${lutealStart}–${cycleLength}`,
+  };
+}
+
 export function getPhaseForDay(
   dayOfCycle: number,
   periodLength: number,

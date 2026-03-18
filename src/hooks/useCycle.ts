@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { CyclePhase, Profile } from '../types';
-import { getPhaseForDay } from '../lib/cycleUtils';
+import { getPhaseForDay, parseLocalDate } from '../lib/cycleUtils';
 
 interface CycleState {
   currentPhase: CyclePhase;
@@ -20,7 +20,7 @@ export function useCycle(profile: Profile | null): CycleState {
       };
     }
 
-    const lastPeriod = new Date(profile.last_period_start);
+    const lastPeriod = parseLocalDate(profile.last_period_start);
     const today = new Date();
     const diffDays = Math.floor((today.getTime() - lastPeriod.getTime()) / (1000 * 60 * 60 * 24));
 
