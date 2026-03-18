@@ -39,7 +39,7 @@ export default function PartnerDashboard() {
     const { data, error } = await supabase
       .from('partner_links')
       .update({ partner_id: user.id, status: 'active' })
-      .eq('invite_code', inviteCode.trim().toUpperCase())
+      .eq('invite_code', inviteCode.trim())
       .eq('status', 'pending')
       .is('partner_id', null)
       .select();
@@ -67,10 +67,11 @@ export default function PartnerDashboard() {
           <input
             type="text"
             value={inviteCode}
-            onChange={e => setInviteCode(e.target.value.toUpperCase())}
-            className="w-full px-4 py-3.5 rounded-2xl border border-em-border bg-em-surface text-em-text placeholder:text-em-muted focus:outline-none focus:border-em-lavender transition-colors text-xl tracking-widest font-medium text-center uppercase"
-            placeholder="ABCD1234"
-            maxLength={8}
+            onChange={e => setInviteCode(e.target.value.replace(/\D/g, ''))}
+            className="w-full px-4 py-3.5 rounded-2xl border border-em-border bg-em-surface text-em-text placeholder:text-em-muted focus:outline-none focus:border-em-lavender transition-colors text-xl tracking-widest font-medium text-center"
+            placeholder="123456"
+            maxLength={6}
+            inputMode="numeric"
           />
           {connectError && (
             <p className="text-em-rose text-sm text-center">{connectError}</p>

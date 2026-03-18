@@ -5,8 +5,7 @@ import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 
 function generateCode(): string {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({ length: 8 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  return Array.from({ length: 6 }, () => Math.floor(Math.random() * 10)).join('');
 }
 
 interface PartnerLink {
