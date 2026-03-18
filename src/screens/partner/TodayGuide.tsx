@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, AlertCircle, MessageCircle } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { usePartnerLink } from '../../hooks/usePartnerLink';
@@ -14,6 +14,10 @@ export default function TodayGuide() {
   const { currentPhase } = useCycle(herProfile);
   const [activePhase, setActivePhase] = useState<CyclePhase>(currentPhase);
   const [activeTab, setActiveTab] = useState<Tab>('help');
+
+  useEffect(() => {
+    if (!loading) setActivePhase(currentPhase);
+  }, [loading, currentPhase]);
 
   const phase = getPartnerPhase(activePhase);
 

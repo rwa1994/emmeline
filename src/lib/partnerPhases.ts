@@ -69,7 +69,7 @@ export const partnerPhases: PartnerPhaseInfo[] = [
     ],
     thingsToSay: [
       '"Want to do something fun this weekend?"',
-      '"You seem really good at the moment."',
+      '"You seem really happy at the moment — that makes me happy."',
       '"I\'ve been thinking about planning a trip — what do you think?"',
       '"Let\'s try that new place we\'ve been meaning to go to."',
     ],
