@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight, BookOpen, ChefHat, Compass } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { usePartnerLink } from '../../hooks/usePartnerLink';
 import { useCycle } from '../../hooks/useCycle';
 import { getPartnerPhase } from '../../lib/partnerPhases';
+import { supabase } from '../../lib/supabase';
 
 function greeting() {
   const h = new Date().getHours();
@@ -15,6 +17,9 @@ function greeting() {
 export default function PartnerDashboard() {
   const { profile, user } = useAuth();
   const { herProfile, loading } = usePartnerLink(user?.id);
+  const [inviteCode, setInviteCode] = useState('');
+  const [connecting, setConnecting] = useState(false);
+  const [connectError, setConnectError] = useState('');
   const { currentPhase, dayOfCycle, daysUntilPeriod } = useCycle(herProfile);
   const phase = getPartnerPhase(currentPhase);
 
@@ -26,16 +31,57 @@ export default function PartnerDashboard() {
     );
   }
 
+  async function handleConnect() {
+    if (!inviteCode.trim() || !user) return;
+    setConnecting(true);
+    setConnectError('');
+
+    const { error } = await supabase
+      .from('partner_links')
+      .update({ partner_id: user.id, status: 'active' })
+      .eq('invite_code', inviteCode.trim().toUpperCase())
+      .eq('status', 'pending')
+      .is('partner_id', null);
+
+    if (error) {
+      setConnectError('That code didn\'t work. Check it with your partner and try again.');
+      setConnecting(false);
+      return;
+    }
+
+    window.location.reload();
+  }
+
   if (!herProfile) {
     return (
       <div className="min-h-svh bg-em-cream flex flex-col items-center justify-center px-6 text-center">
         <div className="w-16 h-16 rounded-full bg-em-lavender-light flex items-center justify-center mb-4">
           <span className="text-2xl">🔗</span>
         </div>
-        <h2 className="font-heading text-2xl text-em-text mb-2">Not connected yet</h2>
-        <p className="text-em-muted text-sm leading-relaxed">
-          Ask your partner to send you an invite code from their Emmeline app, then enter it in your settings.
+        <h2 className="font-heading text-2xl text-em-text mb-4">Connect to your partner</h2>
+        <p className="text-em-muted text-sm leading-relaxed mb-8">
+          Enter the invite code your partner shared with you from their Emmeline app.
         </p>
+        <div className="w-full max-w-xs space-y-3">
+          <input
+            type="text"
+            value={inviteCode}
+            onChange={e => setInviteCode(e.target.value.toUpperCase())}
+            className="w-full px-4 py-3.5 rounded-2xl border border-em-border bg-em-surface text-em-text placeholder:text-em-muted focus:outline-none focus:border-em-lavender transition-colors text-xl tracking-widest font-medium text-center uppercase"
+            placeholder="ABCD1234"
+            maxLength={8}
+          />
+          {connectError && (
+            <p className="text-em-rose text-sm text-center">{connectError}</p>
+          )}
+          <button
+            onClick={handleConnect}
+            disabled={connecting || !inviteCode.trim()}
+            className="w-full py-3.5 rounded-2xl bg-em-lavender text-white font-medium disabled:opacity-40 transition-opacity"
+          >
+            {connecting ? 'Connecting...' : 'Connect'}
+          </button>
+        </div>
       </div>
     );
   }
