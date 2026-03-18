@@ -19,6 +19,7 @@ import Medications from './screens/her/Medications';
 import GPReport from './screens/her/GPReport';
 import Journal from './screens/her/Journal';
 import HerRecipes from './screens/her/HerRecipes';
+import Landing from './screens/Landing';
 import Feedback from './screens/Feedback';
 import Admin from './screens/Admin';
 import PartnerDashboard from './screens/partner/Dashboard';
@@ -69,7 +70,7 @@ function App() {
         <Route
           path="/"
           element={
-            !user ? <Navigate to="/login" /> :
+            !user ? <Landing /> :
             !profile ? <Navigate to="/role" /> :
             isPartner ? <Navigate to="/partner" /> :
             <Layout />
