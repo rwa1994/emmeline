@@ -58,14 +58,12 @@ export default function PartnerOnboarding() {
     }
 
     // Accept the invite
-    const { error: linkError } = await supabase
-      .from('partner_links')
-      .update({ partner_id: user.id, status: 'active' })
-      .eq('invite_code', inviteCode.trim())
-      .eq('status', 'pending')
-      .is('partner_id', null);
+    const { data: accepted, error: linkError } = await supabase.rpc('accept_invite', {
+      p_invite_code: inviteCode.trim(),
+      p_partner_id: user.id,
+    });
 
-    if (linkError) {
+    if (linkError || !accepted) {
       setError('That invite code didn\'t work. Check it with your partner and try again.');
       setLoading(false);
       return;

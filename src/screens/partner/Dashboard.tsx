@@ -36,15 +36,12 @@ export default function PartnerDashboard() {
     setConnecting(true);
     setConnectError('');
 
-    const { data, error } = await supabase
-      .from('partner_links')
-      .update({ partner_id: user.id, status: 'active' })
-      .eq('invite_code', inviteCode.trim())
-      .eq('status', 'pending')
-      .is('partner_id', null)
-      .select();
+    const { data, error } = await supabase.rpc('accept_invite', {
+      p_invite_code: inviteCode.trim(),
+      p_partner_id: user.id,
+    });
 
-    if (error || !data || data.length === 0) {
+    if (error || !data) {
       setConnectError('That code didn\'t work. Check it with your partner and try again.');
       setConnecting(false);
       return;
