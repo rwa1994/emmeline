@@ -4,7 +4,7 @@ export const phases: PhaseInfo[] = [
   {
     phase: 'menstrual',
     name: 'Menstrual',
-    dayRange: 'Days 1–5',
+    dayRange: 'Days 1–5',  // user's period length
     color: '#C49A9E',
     bgColor: '#EDD5D7',
     description: 'Your body is shedding the uterine lining. Energy is naturally lower. This is a time for rest and gentleness with yourself.',
@@ -64,7 +64,7 @@ export const phases: PhaseInfo[] = [
   {
     phase: 'follicular',
     name: 'Follicular',
-    dayRange: 'Days 6–13',
+    dayRange: 'Days 6–12',
     color: '#5E8057',
     bgColor: '#D4E8D1',
     description: 'Oestrogen is rising. Energy, mood and creativity are building. A great time to start new projects and make social plans.',
@@ -122,7 +122,7 @@ export const phases: PhaseInfo[] = [
   {
     phase: 'ovulatory',
     name: 'Ovulatory',
-    dayRange: 'Days 14–16',
+    dayRange: 'Days 13–16',
     color: '#C47A84',
     bgColor: '#FAE8EB',
     description: "Peak energy, confidence and communication. You're at your most magnetic. Oestrogen and LH surge together.",
@@ -180,7 +180,7 @@ export const phases: PhaseInfo[] = [
   {
     phase: 'luteal',
     name: 'Luteal',
-    dayRange: 'Days 17–28',
+    dayRange: 'Days 17–28',  // last 12 days of cycle
     color: '#7A6FA8',
     bgColor: '#DDD9EE',
     description: 'Progesterone rises then falls. Energy gradually declines toward the end. PMS symptoms may appear in the last few days.',

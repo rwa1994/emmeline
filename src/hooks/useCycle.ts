@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { CyclePhase, Profile } from '../types';
+import { getPhaseForDay } from '../lib/cycleUtils';
 
 interface CycleState {
   currentPhase: CyclePhase;
@@ -21,33 +22,17 @@ export function useCycle(profile: Profile | null): CycleState {
 
     const lastPeriod = new Date(profile.last_period_start);
     const today = new Date();
-    const diffMs = today.getTime() - lastPeriod.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffDays = Math.floor((today.getTime() - lastPeriod.getTime()) / (1000 * 60 * 60 * 24));
 
     const cycleLength = profile.cycle_length || 28;
     const periodLength = profile.period_length || 5;
 
-    const currentDay = (diffDays % cycleLength) + 1;
-    const daysUntilPeriod = cycleLength - currentDay;
-    const cycleProgress = currentDay / cycleLength;
+    const dayOfCycle = (diffDays % cycleLength) + 1;
+    const daysUntilPeriod = cycleLength - dayOfCycle;
+    const cycleProgress = dayOfCycle / cycleLength;
 
-    // Evidence-based phase calculation:
-    // Luteal phase is consistent at ~14 days before next period.
-    // Ovulation occurs around cycleLength - 14, with a ~3-day window.
-    const ovulationDay = cycleLength - 14;
-    const ovulatoryEnd = ovulationDay + 2;
+    const currentPhase = getPhaseForDay(dayOfCycle, periodLength, cycleLength);
 
-    let currentPhase: CyclePhase;
-    if (currentDay <= periodLength) {
-      currentPhase = 'menstrual';
-    } else if (currentDay < ovulationDay) {
-      currentPhase = 'follicular';
-    } else if (currentDay <= ovulatoryEnd) {
-      currentPhase = 'ovulatory';
-    } else {
-      currentPhase = 'luteal';
-    }
-
-    return { currentPhase, dayOfCycle: currentDay, daysUntilPeriod, cycleProgress };
+    return { currentPhase, dayOfCycle, daysUntilPeriod, cycleProgress };
   }, [profile]);
 }

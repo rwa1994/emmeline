@@ -3,14 +3,8 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getPhase, phases } from '../../lib/phases';
 import { supabase } from '../../lib/supabase';
+import { getPhaseForDay } from '../../lib/cycleUtils';
 import type { CyclePhase } from '../../types';
-
-function getDayPhase(dayOfCycle: number, periodLength: number): CyclePhase {
-  if (dayOfCycle <= periodLength) return 'menstrual';
-  if (dayOfCycle <= 13) return 'follicular';
-  if (dayOfCycle <= 16) return 'ovulatory';
-  return 'luteal';
-}
 
 interface DayDetail {
   date: Date;
@@ -40,7 +34,7 @@ export default function Calendar() {
     if (!lastPeriodStart) return null;
     const diff = Math.floor((date.getTime() - lastPeriodStart.getTime()) / (1000 * 60 * 60 * 24));
     const cycleDay = ((diff % cycleLength) + cycleLength) % cycleLength + 1;
-    return { phase: getDayPhase(cycleDay, periodLength), dayOfCycle: cycleDay };
+    return { phase: getPhaseForDay(cycleDay, periodLength, cycleLength), dayOfCycle: cycleDay };
   }
 
   function handleDayTap(day: number) {
