@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ChefHat } from 'lucide-react';
+import { ChefHat, ChevronDown, ChevronUp } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { phases, getPhase } from '../../lib/phases';
@@ -14,6 +14,7 @@ export default function HerRecipes() {
 
   const initialPhase: CyclePhase = location.state?.phase ?? currentPhase;
   const [activePhase, setActivePhase] = useState<CyclePhase>(initialPhase);
+  const [expanded, setExpanded] = useState<number | null>(null);
   const phase = getPhase(activePhase);
 
   return (
@@ -27,7 +28,7 @@ export default function HerRecipes() {
         {phases.map(p => (
           <button
             key={p.phase}
-            onClick={() => setActivePhase(p.phase)}
+            onClick={() => { setActivePhase(p.phase); setExpanded(null); }}
             className="py-2.5 px-1 rounded-2xl text-xs font-medium transition-all text-center relative"
             style={
               activePhase === p.phase
@@ -62,17 +63,59 @@ export default function HerRecipes() {
 
       {/* Recipes */}
       <div className="space-y-3">
-        {phase.recipes.map((recipe, i) => (
-          <div key={i} className="bg-em-surface rounded-2xl p-5 border border-em-border">
-            <p className="font-medium text-em-text mb-1">{recipe.name}</p>
-            <p className="text-sm text-em-muted leading-relaxed">{recipe.description}</p>
-          </div>
-        ))}
-      </div>
+        {phase.recipes.map((recipe, i) => {
+          const isOpen = expanded === i;
+          return (
+            <div key={i} className="bg-em-surface rounded-2xl border border-em-border overflow-hidden">
+              <button
+                onClick={() => setExpanded(isOpen ? null : i)}
+                className="w-full p-5 text-left flex items-start justify-between gap-3"
+              >
+                <div className="flex-1">
+                  <p className="font-medium text-em-text">{recipe.name}</p>
+                  <p className="text-sm text-em-muted mt-0.5 leading-relaxed">{recipe.description}</p>
+                </div>
+                {isOpen
+                  ? <ChevronUp size={16} className="text-em-muted flex-shrink-0 mt-0.5" />
+                  : <ChevronDown size={16} className="text-em-muted flex-shrink-0 mt-0.5" />
+                }
+              </button>
 
-      <p className="text-center text-xs text-em-muted mt-8">
-        Recipes update with each phase.
-      </p>
+              {isOpen && recipe.ingredients && recipe.steps && (
+                <div className="px-5 pb-5 space-y-4 border-t border-em-border pt-4">
+                  <div>
+                    <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-2">Ingredients</p>
+                    <ul className="space-y-1">
+                      {recipe.ingredients.map((ing, j) => (
+                        <li key={j} className="text-sm text-em-text flex items-start gap-2">
+                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: phase.color }} />
+                          {ing}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-2">Method</p>
+                    <ol className="space-y-2">
+                      {recipe.steps.map((step, j) => (
+                        <li key={j} className="text-sm text-em-text flex items-start gap-3">
+                          <span
+                            className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 mt-0.5 text-white"
+                            style={{ backgroundColor: phase.color }}
+                          >
+                            {j + 1}
+                          </span>
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

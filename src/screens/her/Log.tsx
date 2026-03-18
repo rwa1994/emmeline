@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Check, Plus, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
@@ -9,6 +9,12 @@ import { useCycle } from '../../hooks/useCycle';
 const FLOW_OPTIONS = ['Spotting', 'Light', 'Medium', 'Heavy'] as const;
 const PHYSICAL = ['Cramps', 'Bloating', 'Headache', 'Fatigue', 'Breast tenderness', 'Acne', 'Back pain', 'Nausea'];
 const EMOTIONAL = ['Anxious', 'Irritable', 'Low mood', 'Emotional', 'Calm', 'Happy', 'Brain fog', 'Unmotivated'];
+
+interface Medication {
+  id: string;
+  name: string;
+  dosage: string;
+}
 
 function Chip({
   label,
@@ -56,9 +62,13 @@ export default function Log() {
   const [customEmotional, setCustomEmotional] = useState<string[]>([]);
   const [customEmotionalInput, setCustomEmotionalInput] = useState('');
   const [energy, setEnergy] = useState(3);
-  const [notes, setNotes] = useState('');
+  const [journalEntry, setJournalEntry] = useState('');
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [takenToday, setTakenToday] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     if (!periodInitialized && profile) {
@@ -66,6 +76,17 @@ export default function Log() {
       setPeriodInitialized(true);
     }
   }, [currentPhase, profile]);
+
+  useEffect(() => {
+    if (!user) return;
+    Promise.all([
+      supabase.from('medications').select('*').eq('user_id', user.id).eq('active', true).order('created_at', { ascending: true }),
+      supabase.from('daily_logs').select('medications_taken').eq('user_id', user.id).eq('log_date', today).single(),
+    ]).then(([{ data: meds }, { data: log }]) => {
+      setMedications(meds ?? []);
+      setTakenToday(log?.medications_taken ?? []);
+    });
+  }, [user]);
 
   function toggle(list: string[], setList: (v: string[]) => void, item: string) {
     setList(list.includes(item) ? list.filter(s => s !== item) : [...list, item]);
@@ -88,19 +109,33 @@ export default function Log() {
     if (!user) return;
     setSaving(true);
 
-    const today = new Date().toISOString().split('T')[0];
-    await supabase.from('daily_logs').upsert(
-      {
-        user_id: user.id,
-        log_date: today,
-        flow: periodActive && flow ? flow.toLowerCase() : 'none',
-        physical_symptoms: [...physical, ...customPhysical],
-        emotional_symptoms: [...emotional, ...customEmotional],
-        energy,
-        notes,
-      },
-      { onConflict: 'user_id,log_date' }
-    );
+    const saves: Promise<any>[] = [
+      supabase.from('daily_logs').upsert(
+        {
+          user_id: user.id,
+          log_date: today,
+          flow: periodActive && flow ? flow.toLowerCase() : 'none',
+          physical_symptoms: [...physical, ...customPhysical],
+          emotional_symptoms: [...emotional, ...customEmotional],
+          energy,
+          notes: journalEntry,
+          medications_taken: takenToday,
+        },
+        { onConflict: 'user_id,log_date' }
+      ),
+    ];
+
+    if (journalEntry.trim()) {
+      saves.push(
+        supabase.from('journals').insert({
+          user_id: user.id,
+          content: journalEntry.trim(),
+          phase: currentPhase,
+        })
+      );
+    }
+
+    await Promise.all(saves);
 
     setSaving(false);
     setSaved(true);
@@ -119,30 +154,14 @@ export default function Log() {
     );
   }
 
-  const today = new Date().toLocaleDateString('en-GB', {
+  const todayLabel = new Date().toLocaleDateString('en-GB', {
     weekday: 'long', day: 'numeric', month: 'long',
   });
 
   return (
     <div className="px-6 pt-12 pb-8">
       <h1 className="font-heading text-4xl text-em-text mb-1">How are you today?</h1>
-      <p className="text-em-muted text-sm mb-4">{today}</p>
-
-      {/* Quick links */}
-      <div className="flex gap-2 mb-7">
-        <Link
-          to="/journal"
-          className="flex-1 py-2.5 rounded-2xl border border-em-border bg-em-surface text-em-text text-sm font-medium text-center"
-        >
-          Journal
-        </Link>
-        <Link
-          to="/medications"
-          className="flex-1 py-2.5 rounded-2xl border border-em-border bg-em-surface text-em-text text-sm font-medium text-center"
-        >
-          Medications
-        </Link>
-      </div>
+      <p className="text-em-muted text-sm mb-7">{todayLabel}</p>
 
       {/* Period toggle */}
       <section className="mb-7">
@@ -286,16 +305,52 @@ export default function Log() {
         </div>
       </section>
 
-      {/* Notes */}
+      {/* Medications */}
+      {medications.length > 0 && (
+        <section className="mb-7">
+          <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-3">Medications</p>
+          <div className="flex flex-wrap gap-2">
+            {medications.map(med => {
+              const taken = takenToday.includes(med.name);
+              return (
+                <button
+                  key={med.id}
+                  onClick={() => {
+                    const updated = taken
+                      ? takenToday.filter(n => n !== med.name)
+                      : [...takenToday, med.name];
+                    setTakenToday(updated);
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all border"
+                  style={
+                    taken
+                      ? { backgroundColor: '#D4E8D1', color: '#4A6945', borderColor: '#8FAF88' }
+                      : { backgroundColor: 'white', color: '#9A8080', borderColor: '#E8DADA' }
+                  }
+                >
+                  {taken && <Check size={12} />}
+                  {med.name}
+                  {med.dosage && <span className="text-xs opacity-70">{med.dosage}</span>}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Journal */}
       <section className="mb-8">
-        <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-3">Notes</p>
+        <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-3">Journal</p>
         <textarea
-          value={notes}
-          onChange={e => setNotes(e.target.value)}
+          value={journalEntry}
+          onChange={e => setJournalEntry(e.target.value)}
           className="w-full px-4 py-3.5 rounded-2xl border border-em-border bg-em-surface text-em-text placeholder:text-em-muted focus:outline-none focus:border-em-rose transition-colors resize-none text-sm leading-relaxed"
           placeholder="Anything on your mind..."
           rows={3}
         />
+        {journalEntry.trim().length > 0 && (
+          <p className="text-xs text-em-muted mt-1.5">This will also be saved to your journal.</p>
+        )}
       </section>
 
       <button

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Check } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -114,13 +114,13 @@ export default function Medications() {
                 {/* Taken today toggle */}
                 <button
                   onClick={() => toggleTaken(med.name)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center transition-all flex-shrink-0"
                   style={taken
-                    ? { backgroundColor: '#5E8057', color: 'white' }
-                    : { backgroundColor: '#F5F0E8', color: '#9A8080' }
+                    ? { backgroundColor: '#5E8057' }
+                    : { backgroundColor: '#F5F0E8', border: '1.5px solid #C8D8C5' }
                   }
                 >
-                  {taken ? 'Taken' : 'Mark taken'}
+                  <Check size={16} style={{ color: taken ? 'white' : '#9A8080' }} />
                 </button>
 
                 <button

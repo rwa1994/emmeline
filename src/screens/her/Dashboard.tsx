@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PenLine, MessageCircle, ChevronRight, Droplets, Pill } from 'lucide-react';
+import { PenLine, MessageCircle, ChevronRight, Droplets } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { getPhase } from '../../lib/phases';
@@ -186,25 +186,19 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Medications */}
+      {/* Feedback */}
       <Link
-        to="/medications"
+        to="/feedback"
         className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
       >
-        <div className="w-9 h-9 rounded-xl bg-em-sage-light flex items-center justify-center flex-shrink-0">
-          <Pill size={16} className="text-em-sage-dark" />
+        <div className="w-9 h-9 rounded-xl bg-em-rose-light flex items-center justify-center flex-shrink-0">
+          <MessageCircle size={16} className="text-em-rose" />
         </div>
         <div>
-          <p className="text-sm font-medium text-em-text">Medications</p>
-          <p className="text-xs text-em-muted mt-0.5">Track what you take</p>
+          <p className="text-sm font-medium text-em-text">Give feedback</p>
+          <p className="text-xs text-em-muted mt-0.5">Tell us what you think</p>
         </div>
         <ChevronRight size={16} className="text-em-muted ml-auto" />
-      </Link>
-
-
-      {/* Feedback */}
-      <Link to="/feedback" className="w-full text-center text-xs text-em-muted py-3 block">
-        Give feedback on Emmeline
       </Link>
     </div>
   );
