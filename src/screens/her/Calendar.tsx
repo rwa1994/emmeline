@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, Droplets } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { getPhase, phases } from '../../lib/phases';
 import { supabase } from '../../lib/supabase';
@@ -10,6 +10,7 @@ interface DayDetail {
   date: Date;
   dayOfCycle: number;
   phase: CyclePhase;
+  isPredicted: boolean;
 }
 
 export default function Calendar() {
@@ -24,6 +25,7 @@ export default function Calendar() {
   const firstDayOfWeek = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   const cycleLength = profile?.cycle_length ?? 28;
   const periodLength = profile?.period_length ?? 5;
@@ -31,19 +33,33 @@ export default function Calendar() {
   const lastPeriodStart = periodStartStr ? parseLocalDate(periodStartStr) : null;
   const phaseRanges = getPhaseRanges(periodLength, cycleLength);
 
-  function getPhaseForDate(date: Date): { phase: CyclePhase; dayOfCycle: number } | null {
+  function getDayInfo(date: Date): { phase: CyclePhase; dayOfCycle: number } | null {
     if (!lastPeriodStart) return null;
-    const diff = Math.floor((date.getTime() - lastPeriodStart.getTime()) / (1000 * 60 * 60 * 24));
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const diff = Math.floor((date.getTime() - lastPeriodStart.getTime()) / msPerDay);
     const cycleDay = ((diff % cycleLength) + cycleLength) % cycleLength + 1;
     return { phase: getPhaseForDay(cycleDay, periodLength, cycleLength), dayOfCycle: cycleDay };
   }
 
+  // Next predicted period start
+  const nextPeriodDate = (() => {
+    if (!lastPeriodStart) return null;
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const diffDays = Math.floor((today.getTime() - lastPeriodStart.getTime()) / msPerDay);
+    const cyclesCompleted = Math.floor(diffDays / cycleLength);
+    return new Date(lastPeriodStart.getTime() + (cyclesCompleted + 1) * cycleLength * msPerDay);
+  })();
+
+  const nextPeriodLabel = nextPeriodDate
+    ? nextPeriodDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
+    : null;
+
   function handleDayTap(day: number) {
     const date = new Date(year, month, day);
-    if (date > today) return;
-    const result = getPhaseForDate(date);
+    const result = getDayInfo(date);
     if (!result) return;
-    setSelectedDay({ date, ...result });
+    const isPredicted = date > today;
+    setSelectedDay({ date, ...result, isPredicted });
   }
 
   async function setPeriodStartDate(date: Date) {
@@ -61,7 +77,18 @@ export default function Calendar() {
 
   return (
     <div className="px-6 pt-12 pb-6">
-      <h1 className="font-heading text-4xl text-em-text mb-6">Calendar</h1>
+      <h1 className="font-heading text-4xl text-em-text mb-4">Calendar</h1>
+
+      {/* Next period prediction banner */}
+      {nextPeriodLabel && (
+        <div className="flex items-center gap-2.5 bg-em-rose-light rounded-2xl px-4 py-3 mb-5 border border-em-border">
+          <Droplets size={16} className="text-em-rose flex-shrink-0" />
+          <div>
+            <p className="text-xs font-medium text-em-rose-dark">Next period predicted</p>
+            <p className="text-sm text-em-text font-medium">{nextPeriodLabel}</p>
+          </div>
+        </div>
+      )}
 
       {/* Month nav */}
       <div className="flex items-center justify-between mb-5">
@@ -96,32 +123,43 @@ export default function Calendar() {
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
           const date = new Date(year, month, day);
-          const isToday = date.toDateString() === today.toDateString();
+          const isPast = date < today;
+          const isToday = date.getTime() === today.getTime();
           const isFuture = date > today;
-          const result = isFuture ? null : getPhaseForDate(date);
+          const result = getDayInfo(date);
           const phaseInfo = result ? getPhase(result.phase) : null;
+          const isPredictedPeriodStart = isFuture && result?.dayOfCycle === 1;
           const isSelected = selectedDay?.date.toDateString() === date.toDateString();
 
           return (
-            <div key={day} className="flex items-center justify-center">
+            <div key={day} className="flex flex-col items-center">
               <button
                 onClick={() => handleDayTap(day)}
-                disabled={isFuture}
+                disabled={!result}
                 className={`w-9 h-9 flex items-center justify-center rounded-full text-sm transition-all
                   ${isToday ? 'ring-2 ring-offset-1 ring-em-rose font-semibold' : ''}
-                  ${isFuture ? 'opacity-30 cursor-default' : 'active:scale-95'}
+                  ${isPast ? 'active:scale-95' : ''}
+                  ${isFuture ? 'active:scale-95' : ''}
                   ${isSelected ? 'ring-2 ring-offset-1 ring-em-text' : ''}
                 `}
-                style={phaseInfo ? { backgroundColor: phaseInfo.bgColor } : {}}
+                style={phaseInfo ? {
+                  backgroundColor: phaseInfo.bgColor,
+                  opacity: isFuture ? 0.5 : 1,
+                  border: isPredictedPeriodStart ? `2px dashed ${phaseInfo.color}` : undefined,
+                } : {}}
               >
-                <span className="text-em-text">{day}</span>
+                <span style={{ color: '#2E1F1F' }}>{day}</span>
               </button>
+              {/* Period start dot */}
+              {isPredictedPeriodStart && (
+                <span className="w-1 h-1 rounded-full mt-0.5 bg-em-rose opacity-60" />
+              )}
             </div>
           );
         })}
       </div>
 
-      {/* Legend — dynamic ranges based on user's cycle/period length */}
+      {/* Legend */}
       <div className="mt-6 grid grid-cols-2 gap-y-2.5 gap-x-4">
         {phases.map(p => (
           <div key={p.phase} className="flex items-center gap-2">
@@ -130,6 +168,11 @@ export default function Calendar() {
           </div>
         ))}
       </div>
+      <div className="flex items-center gap-2 mt-2.5">
+        <div className="w-3 h-3 rounded-full border-2 border-dashed border-em-rose flex-shrink-0 opacity-60" />
+        <span className="text-xs text-em-muted">Predicted period start</span>
+      </div>
+      <p className="text-xs text-em-muted mt-2 opacity-70">Future phases are predicted based on your cycle length.</p>
 
       {/* Day detail panel */}
       {selectedDay && (
@@ -143,6 +186,7 @@ export default function Calendar() {
                 </p>
                 <p className="text-sm text-em-muted mt-0.5">
                   Day {selectedDay.dayOfCycle} of cycle
+                  {selectedDay.isPredicted && ' · predicted'}
                 </p>
               </div>
               <button
@@ -153,33 +197,38 @@ export default function Calendar() {
               </button>
             </div>
 
-            {/* Phase badge */}
             {(() => {
               const phaseInfo = getPhase(selectedDay.phase);
               return (
-                <div
-                  className="inline-block px-4 py-1.5 rounded-full text-sm font-medium mb-5"
-                  style={{ backgroundColor: phaseInfo.bgColor, color: phaseInfo.color }}
-                >
-                  {phaseInfo.name} phase
-                </div>
+                <>
+                  <div
+                    className="inline-block px-4 py-1.5 rounded-full text-sm font-medium mb-3"
+                    style={{ backgroundColor: phaseInfo.bgColor, color: phaseInfo.color }}
+                  >
+                    {phaseInfo.name} phase
+                  </div>
+                  <p className="text-sm text-em-muted leading-relaxed mb-5">{phaseInfo.description}</p>
+                </>
               );
             })()}
 
-            <div className="w-full h-px bg-em-border mb-5" />
-
-            <p className="text-xs text-em-muted mb-3">Was this the first day of your period?</p>
-            <button
-              onClick={() => setPeriodStartDate(selectedDay.date)}
-              disabled={updatingPeriod}
-              className="w-full py-3 rounded-2xl text-sm font-medium text-white disabled:opacity-50 transition-opacity"
-              style={{ backgroundColor: '#C49A9E' }}
-            >
-              {updatingPeriod ? 'Updating...' : 'Set as period start date'}
-            </button>
-            <p className="text-xs text-em-muted text-center mt-2">
-              This will recalculate your cycle from this date.
-            </p>
+            {!selectedDay.isPredicted && (
+              <>
+                <div className="w-full h-px bg-em-border mb-5" />
+                <p className="text-xs text-em-muted mb-3">Was this the first day of your period?</p>
+                <button
+                  onClick={() => setPeriodStartDate(selectedDay.date)}
+                  disabled={updatingPeriod}
+                  className="w-full py-3 rounded-2xl text-sm font-medium text-white disabled:opacity-50 transition-opacity"
+                  style={{ backgroundColor: '#C49A9E' }}
+                >
+                  {updatingPeriod ? 'Updating...' : 'Set as period start date'}
+                </button>
+                <p className="text-xs text-em-muted text-center mt-2">
+                  This will recalculate your cycle from this date.
+                </p>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -36,10 +36,10 @@ export async function sendMessage(
 
 function buildSystemPrompt(context: EmContext): string {
   const phaseDescriptions: Record<CyclePhase, string> = {
-    menstrual: 'menstrual phase (days 1–5) — she is on her period and may have cramping, fatigue, and low energy. She needs gentleness and warmth.',
-    follicular: 'follicular phase (days 6–13) — energy is rising, mood is often positive, creativity is building. A good time for planning and new starts.',
-    ovulatory: 'ovulatory phase (days 14–16) — peak energy and confidence, feeling social and communicative, at her most magnetic.',
-    luteal: 'luteal phase (days 17–28) — energy gradually declining, may have PMS symptoms including irritability, bloating, or low mood. Needs comfort and routine.',
+    menstrual: 'menstrual phase — oestrogen and progesterone are at their lowest. She is bleeding and may have cramping, fatigue, and low energy. Her nervous system is more sensitive. She needs gentleness, warmth, and low expectations placed on her.',
+    follicular: 'follicular phase — oestrogen is rising steadily. Energy, mood and creativity are building. Dopamine and serotonin signalling improve. A good time for planning, new experiences, and social connection.',
+    ovulatory: 'ovulatory phase — peak oestrogen triggers a surge of LH (luteinising hormone) which releases an egg. She is at peak energy, confidence and communication. Oxytocin and dopamine are elevated. She is feeling her most social and expressive.',
+    luteal: 'luteal phase — progesterone rises then falls toward the end of the cycle. Energy gradually declines. PMS symptoms including irritability, bloating, low mood or anxiety may appear in the final days as progesterone drops. She needs comfort, routine and patience.',
   };
 
   return `You are Em, a warm, knowledgeable, and deeply empathetic menstrual health companion built into the Emmeline app.

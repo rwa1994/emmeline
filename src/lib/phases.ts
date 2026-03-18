@@ -7,7 +7,7 @@ export const phases: PhaseInfo[] = [
     dayRange: 'Days 1–5',  // user's period length
     color: '#C49A9E',
     bgColor: '#EDD5D7',
-    description: 'Your body is shedding the uterine lining. Energy is naturally lower. This is a time for rest and gentleness with yourself.',
+    description: 'Your body is shedding the womb lining (endometrium). Oestrogen and progesterone are at their lowest. Energy is naturally lower. This is a time for rest and gentleness with yourself.',
     nutrition: [
       'Iron-rich foods: lentils, spinach, red meat',
       'Anti-inflammatory: ginger tea, turmeric, berries',
@@ -60,6 +60,12 @@ export const phases: PhaseInfo[] = [
         steps: ['Melt chocolate in a heatproof bowl over a pan of barely simmering water.', 'Pour onto a baking tray lined with parchment and spread thin.', 'Scatter toppings over the top and sprinkle with sea salt.', 'Refrigerate for 30 min until set, then break into pieces.'],
       },
     ],
+    learnMore: {
+      nutrition: 'When you bleed, you lose iron — around 15 to 30mg per period on average. Iron is essential for making red blood cells and for energy production, which is why low iron is one of the most common reasons women feel unusually tired during their period. Anti-inflammatory foods like ginger and turmeric contain compounds (gingerols and curcumin) shown in clinical trials to reduce prostaglandins — the hormone-like chemicals that trigger uterine contractions and cause cramping (Ozgoli et al. 2009, Shirvani et al. 2015).',
+      exercise: 'A 2018 study in the Journal of Education and Health Promotion found that 30 minutes of aerobic exercise three times a week significantly reduced menstrual cramp severity. Movement increases endorphins (your body\'s natural pain-relievers) and improves blood flow to the uterus, easing cramping. You do not need to push hard — gentle movement is enough, and rest is equally valid on heavier days.',
+      avoid: 'Caffeine causes blood vessels to constrict and stimulates the production of prostaglandins, both of which intensify cramps and increase pain sensitivity (Barnard et al. 2000). Alcohol is a systemic inflammatory — it raises circulating inflammatory markers that worsen cramp pain and bloating. Salt causes water retention because your kidneys hold onto sodium more readily when oestrogen and progesterone drop sharply at the start of your period.',
+      mental: 'Oestrogen and progesterone both drop to their lowest point at the start of your period. These hormones directly regulate serotonin (the mood-stabilising neurotransmitter) and dopamine. Lower oestrogen means reduced serotonin signalling, which explains why you may feel more emotionally sensitive, tearful, or withdrawn. This is a well-documented biological response — not a character flaw. Research consistently shows that social withdrawal and introspection during menstruation are normal, adaptive responses to these hormonal shifts.',
+    },
   },
   {
     phase: 'follicular',
@@ -118,6 +124,12 @@ export const phases: PhaseInfo[] = [
         steps: ['Toast the bread until golden.', 'Mash avocado with a squeeze of lemon, salt and pepper.', 'Spread avocado thickly on toast.', 'Layer smoked salmon over the top.', 'Finish with capers, fresh dill and another squeeze of lemon.'],
       },
     ],
+    learnMore: {
+      nutrition: 'As oestrogen rises in the follicular phase, your gut microbiome plays an important role in how well your body processes and clears it. Research by Baker et al. (2017) found that a healthy gut microbiome — supported by fermented foods like yoghurt, kefir and kimchi — helps the body metabolise oestrogen efficiently. Poor gut health can lead to oestrogen being reabsorbed rather than excreted, disrupting hormone balance for the rest of your cycle. Eggs and seeds provide zinc, selenium and omega-3s that support follicle development in the ovary.',
+      exercise: 'Oestrogen has anabolic effects — it helps muscles repair faster and tolerate more load. Research by Sung et al. (2014) found women made significantly greater strength gains from resistance training in the follicular phase compared to the luteal phase. Your body is biologically primed to build muscle and recover more quickly right now. This is the best window in your cycle to push harder, try something new, or set a personal best.',
+      avoid: 'There are no specific foods or behaviours that are harmful in this phase — your body is in its most resilient state. The main consideration is staying hydrated as energy and activity increase. Even mild dehydration blunts the cognitive and physical benefits of rising oestrogen.',
+      mental: 'Rising oestrogen increases the sensitivity of dopamine receptors in the brain — dopamine is the neurotransmitter linked to motivation, reward, and pleasure (Yoest et al. 2014). Oestrogen also boosts serotonin signalling, which directly lifts mood and reduces anxiety. Research shows that verbal fluency, working memory and creative thinking all measurably improve in the follicular phase. The mental clarity and drive you feel right now are well-documented hormonal effects — not coincidence.',
+    },
   },
   {
     phase: 'ovulatory',
@@ -125,7 +137,7 @@ export const phases: PhaseInfo[] = [
     dayRange: 'Days 13–16',
     color: '#C47A84',
     bgColor: '#FAE8EB',
-    description: "Peak energy, confidence and communication. You're at your most magnetic. Oestrogen and LH surge together.",
+    description: "Peak energy, confidence and communication. You're at your most magnetic. Oestrogen peaks and your brain sends a surge of LH (luteinising hormone) — the signal that triggers the release of an egg.",
     nutrition: [
       'Light, energising meals',
       'Raw vegetables and fresh fruit',
@@ -176,6 +188,12 @@ export const phases: PhaseInfo[] = [
         steps: ['Grate courgette, sprinkle with salt, leave 10 min then squeeze out as much liquid as possible.', 'Mix courgette with feta, eggs, flour, mint and lemon zest. Season well.', 'Heat a little oil in a frying pan. Drop heaped tablespoons of mixture in.', 'Cook for 3 min each side until golden and cooked through.', 'Serve with yoghurt or a simple green salad.'],
       },
     ],
+    learnMore: {
+      nutrition: 'At ovulation, your body releases a mature egg following a sharp surge in LH — luteinising hormone — which is the chemical signal your brain sends to tell the ovary it is time. Zinc is essential for healthy egg development and for LH receptor function in the ovary (Garner et al. 2021). Anti-inflammatory omega-3 fats from salmon and avocado protect the egg and support the brief, natural inflammatory process that occurs at ovulation. Staying light on heavy meals helps keep blood flow where it is needed.',
+      exercise: 'Research shows that pain tolerance is measurably higher around ovulation, likely due to the combined effects of peak oestrogen and a small rise in testosterone (Bartley and Fillingim 2013). This makes ovulation the ideal window for personal bests, heavier lifting, or more intense cardio. Your cardiovascular system is also performing optimally — VO2 max (how efficiently your body uses oxygen) tends to peak in this phase.',
+      avoid: 'Heavy, hard-to-digest meals divert blood flow to the gut during a time when the reproductive system is the priority. Some research suggests that excess alcohol around ovulation may affect the timing of the LH surge — potentially disrupting whether ovulation occurs as expected. Keeping alcohol moderate in this window is a sensible precaution.',
+      mental: 'Peak oestrogen boosts oxytocin (the bonding and trust hormone) and dopamine simultaneously — which is why you feel more socially confident, empathetic and communicative right now. Research by Gangestad et al. (2016) found that women\'s social behaviour, communication skills and perceived attractiveness measurably shift around ovulation. Your increased empathy and verbal confidence are real, hormonally-driven advantages. Use this window for important conversations, presentations, or social plans that matter.',
+    },
   },
   {
     phase: 'luteal',
@@ -236,6 +254,12 @@ export const phases: PhaseInfo[] = [
         steps: ['Preheat oven to 180°C. Line a baking tray with parchment.', 'Mash bananas well in a bowl until smooth.', 'Mix in oats, nut butter, honey, vanilla and salt.', 'Fold in chocolate chips.', 'Drop heaped tablespoons onto the tray and flatten slightly.', 'Bake for 12 to 14 min until golden at the edges.'],
       },
     ],
+    learnMore: {
+      nutrition: 'Progesterone — the dominant hormone after ovulation — slightly raises your metabolic rate by around 5 to 10% (Solomon et al. 1994), which partly explains why you feel hungrier. Complex carbohydrates help maintain steady blood sugar, which in turn supports serotonin production in the gut. Magnesium supports the GABA system in the brain — GABA is a calming neurotransmitter that becomes less effective in the luteal phase. Controlled trials have found magnesium supplementation measurably reduces PMS symptoms including mood changes, bloating and anxiety (Facchinetti et al. 1991).',
+      exercise: 'Progesterone raises your resting body temperature slightly, which makes exercise feel harder than it actually is — your perceived effort increases even when your output is the same (Janse de Jonge 2003). This is not a fitness regression; it is a hormonal effect. Moderate exercise in the luteal phase has been shown to improve mood and reduce bloating through endorphin release, but pushing too hard in the final days can worsen PMS symptoms. Listen to your body and adjust intensity accordingly.',
+      avoid: 'Caffeine stimulates cortisol (your stress hormone), which is already more reactive in the luteal phase because of how progesterone interacts with the brain\'s stress system. This combination amplifies anxiety and irritability significantly. Alcohol worsens PMS by disrupting sleep architecture and depleting magnesium — both already vulnerable in this phase. Salt activates aldosterone, a hormone that makes the kidneys retain water. Aldosterone is more sensitive in the luteal phase, which is why salty food causes noticeably more bloating now than at other times.',
+      mental: 'Progesterone is broken down in the body into a compound called allopregnanolone, which normally calms the brain by activating GABA receptors. However, research by Backstrom et al. (2014) found that in women with PMS or PMDD, the brain\'s GABA receptors become less responsive to this compound in the luteal phase — causing anxiety rather than calm. The inner critic gets louder, small problems feel bigger, and emotions are more intense. This is a real, biological mechanism, not an overreaction. Tracking your patterns across cycles helps you anticipate this window and prepare for it.',
+    },
   },
 ];
 

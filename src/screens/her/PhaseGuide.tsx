@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Utensils, Activity, AlertCircle, Heart, ChevronRight } from 'lucide-react';
+import { Utensils, Activity, AlertCircle, Heart, ChevronRight, ChevronDown, ChevronUp, FlaskConical } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
@@ -20,10 +20,16 @@ export default function PhaseGuide() {
   const { currentPhase } = useCycle(profile);
   const [activePhase, setActivePhase] = useState<CyclePhase>(currentPhase);
   const [activeTab, setActiveTab] = useState<Tab>('nutrition');
+  const [scienceOpen, setScienceOpen] = useState(false);
 
   useEffect(() => {
     setActivePhase(currentPhase);
   }, [currentPhase]);
+
+  // Close science panel when tab or phase changes
+  useEffect(() => {
+    setScienceOpen(false);
+  }, [activeTab, activePhase]);
 
   const phase = phases.find(p => p.phase === activePhase)!;
 
@@ -32,6 +38,13 @@ export default function PhaseGuide() {
     exercise: phase.exercise,
     avoid: phase.avoid,
     mental: phase.mentalHealth,
+  };
+
+  const scienceContent: Record<Tab, string> = {
+    nutrition: phase.learnMore.nutrition,
+    exercise: phase.learnMore.exercise,
+    avoid: phase.learnMore.avoid,
+    mental: phase.learnMore.mental,
   };
 
   return (
@@ -106,6 +119,29 @@ export default function PhaseGuide() {
             <p className="text-sm text-em-text leading-relaxed">{item}</p>
           </div>
         ))}
+      </div>
+
+      {/* The science — expandable */}
+      <div className="mt-4 rounded-2xl border border-em-border overflow-hidden">
+        <button
+          onClick={() => setScienceOpen(v => !v)}
+          className="w-full px-4 py-3.5 flex items-center justify-between bg-em-surface"
+        >
+          <div className="flex items-center gap-2">
+            <FlaskConical size={14} style={{ color: phase.color }} />
+            <span className="text-sm font-medium text-em-text">The science behind this</span>
+          </div>
+          {scienceOpen
+            ? <ChevronUp size={16} className="text-em-muted" />
+            : <ChevronDown size={16} className="text-em-muted" />
+          }
+        </button>
+        {scienceOpen && (
+          <div className="px-4 pb-4 pt-1 border-t border-em-border" style={{ backgroundColor: phase.bgColor }}>
+            <p className="text-sm text-em-text leading-relaxed">{scienceContent[activeTab]}</p>
+            <p className="text-xs text-em-muted mt-3">Based on peer-reviewed research. Sources available on request.</p>
+          </div>
+        )}
       </div>
 
       {/* Recipes link on Eat tab */}

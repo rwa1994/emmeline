@@ -45,4 +45,5 @@ export interface PhaseInfo {
   avoid: string[];
   mentalHealth: string[];
   recipes: { name: string; description: string; ingredients?: string[]; steps?: string[] }[];
+  learnMore: { nutrition: string; exercise: string; avoid: string; mental: string };
 }
