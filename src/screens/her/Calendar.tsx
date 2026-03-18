@@ -23,7 +23,7 @@ export default function Calendar() {
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<DayDetail | null>(null);
   const [updatingPeriod, setUpdatingPeriod] = useState(false);
-  const [periodStart, setPeriodStart] = useState(profile?.last_period_start ?? null);
+  const [periodOverride, setPeriodOverride] = useState<string | null>(null);
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -33,7 +33,8 @@ export default function Calendar() {
 
   const cycleLength = profile?.cycle_length ?? 28;
   const periodLength = profile?.period_length ?? 5;
-  const lastPeriodStart = periodStart ? new Date(periodStart) : null;
+  const periodStartStr = periodOverride ?? profile?.last_period_start ?? null;
+  const lastPeriodStart = periodStartStr ? new Date(periodStartStr) : null;
 
   function getPhaseForDate(date: Date): { phase: CyclePhase; dayOfCycle: number } | null {
     if (!lastPeriodStart) return null;
@@ -55,7 +56,7 @@ export default function Calendar() {
     setUpdatingPeriod(true);
     const dateStr = date.toISOString().split('T')[0];
     await supabase.from('profiles').update({ last_period_start: dateStr }).eq('id', user.id);
-    setPeriodStart(dateStr);
+    setPeriodOverride(dateStr);
     setSelectedDay(null);
     setUpdatingPeriod(false);
   }
