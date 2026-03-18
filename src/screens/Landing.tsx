@@ -135,7 +135,7 @@ function PartnerMockup() {
   );
 }
 
-function FeatureCard({ color, bg, title, description }: { color: string; bg: string; title: string; description: string }) {
+function FeatureCard({ bg, title, description }: { bg: string; title: string; description: string }) {
   return (
     <div className="rounded-2xl p-5" style={{ backgroundColor: bg }}>
       <p className="font-heading text-lg text-em-text mb-1">{title}</p>
@@ -196,22 +196,22 @@ export default function Landing() {
         <h2 className="font-heading text-3xl text-em-text mb-6">Know your body better</h2>
         <div className="space-y-3">
           <FeatureCard
-            color="#C49A9E" bg="#EDD5D7"
+            bg="#EDD5D7"
             title="Cycle tracking"
             description="Log your symptoms, mood, and energy daily. See patterns emerge across your cycle."
           />
           <FeatureCard
-            color="#5E8057" bg="#D4E8D1"
+            bg="#D4E8D1"
             title="Phase guide"
             description="Nutrition, exercise, and mental health advice tailored to each phase of your cycle."
           />
           <FeatureCard
-            color="#7A6FA8" bg="#DDD9EE"
+            bg="#DDD9EE"
             title="Em — your AI companion"
             description="Chat with Em about anything cycle-related. Warm, private, and always available."
           />
           <FeatureCard
-            color="#C47A84" bg="#FAE8EB"
+            bg="#FAE8EB"
             title="GP report"
             description="Generate a structured health summary from your logs to share with your doctor."
           />
@@ -224,17 +224,17 @@ export default function Landing() {
         <h2 className="font-heading text-3xl text-em-text mb-6">Stop guessing. Start helping.</h2>
         <div className="space-y-3">
           <FeatureCard
-            color="#C49A9E" bg="#EDD5D7"
+            bg="#EDD5D7"
             title="Daily guide"
             description="Know exactly where she is in her cycle and what she needs today — without having to ask."
           />
           <FeatureCard
-            color="#5E8057" bg="#D4E8D1"
+            bg="#D4E8D1"
             title="AI-powered suggestions"
             description="Tap any suggestion to get a personalised plan based on her phase and your shared interests."
           />
           <FeatureCard
-            color="#7A6FA8" bg="#DDD9EE"
+            bg="#DDD9EE"
             title="What to say. What to avoid."
             description="Practical guidance on how to communicate and what not to do at each phase."
           />
