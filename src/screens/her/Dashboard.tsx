@@ -260,6 +260,11 @@ export default function Dashboard() {
         </div>
         <ChevronRight size={16} className="text-em-muted ml-auto" />
       </Link>
+
+      {/* Feedback */}
+      <Link to="/feedback" className="w-full text-center text-xs text-em-muted py-3 block">
+        Give feedback on Emmeline
+      </Link>
     </div>
   );
 }

@@ -18,6 +18,8 @@ import PartnerControl from './screens/her/PartnerControl';
 import Medications from './screens/her/Medications';
 import GPReport from './screens/her/GPReport';
 import Journal from './screens/her/Journal';
+import Feedback from './screens/Feedback';
+import Admin from './screens/Admin';
 import PartnerDashboard from './screens/partner/Dashboard';
 import TodayGuide from './screens/partner/TodayGuide';
 import Recipes from './screens/partner/Recipes';
@@ -82,6 +84,8 @@ function App() {
           <Route path="medications" element={<Medications />} />
           <Route path="report" element={<GPReport />} />
           <Route path="journal" element={<Journal />} />
+          <Route path="feedback" element={<Feedback />} />
+          <Route path="admin" element={<Admin />} />
         </Route>
 
         {/* Partner stream */}
