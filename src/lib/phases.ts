@@ -34,6 +34,12 @@ export const phases: PhaseInfo[] = [
       'Crying more easily is normal. Let it out rather than pushing it down.',
       'Avoid big decisions or difficult conversations if you can wait a few days.',
     ],
+    recipes: [
+      { name: 'Lentil and spinach soup', description: 'Iron-rich and warming. Exactly what your body needs right now.' },
+      { name: 'Slow-cooked beef stew', description: 'Comforting and full of iron to replenish what is lost.' },
+      { name: 'Ginger and turmeric tea', description: 'Anti-inflammatory and soothing for cramps.' },
+      { name: 'Dark chocolate (70%+)', description: 'Magnesium-rich and a genuine comfort. You have earned it.' },
+    ],
   },
   {
     phase: 'follicular',
@@ -66,6 +72,12 @@ export const phases: PhaseInfo[] = [
       'Revisit goals or ideas you shelved during your last luteal phase.',
       'Notice how your mental clarity changes across your cycle.',
     ],
+    recipes: [
+      { name: 'Grain bowl with roasted veg', description: 'Fresh, light, and full of the nutrients your body is craving.' },
+      { name: 'Salmon with greens', description: 'Omega-3s support rising oestrogen and it is genuinely delicious.' },
+      { name: 'Smoothie bowl', description: 'Colourful, fresh, and energising. Great for this phase.' },
+      { name: 'Spring rolls or fresh wraps', description: 'Light and vibrant. Matches the energy you have right now.' },
+    ],
   },
   {
     phase: 'ovulatory',
@@ -97,6 +109,12 @@ export const phases: PhaseInfo[] = [
       'Make the most of this window for connection and collaboration.',
       'A good time to check in with the people you care about.',
       'Notice how you feel now compared to the end of your last luteal phase.',
+    ],
+    recipes: [
+      { name: 'Sushi', description: 'Light, fresh, zinc-rich. Perfect for this peak phase.' },
+      { name: 'Avocado and prawn salad', description: 'Anti-inflammatory fats and fresh flavours.' },
+      { name: 'Sharing plates', description: 'Tapas, mezze, charcuterie. Sociable and celebratory.' },
+      { name: 'A special dinner', description: 'You are feeling your best. Match that energy with the occasion.' },
     ],
   },
   {
@@ -131,6 +149,12 @@ export const phases: PhaseInfo[] = [
       'Withdrawing slightly from social situations is natural and healthy.',
       'Journalling can help you separate PMS thoughts from reality.',
       'Track your patterns across cycles so you can anticipate and prepare.',
+    ],
+    recipes: [
+      { name: 'Comfort pasta', description: 'Complex carbs stabilise mood swings. It is exactly what you will want.' },
+      { name: 'Baked salmon with sweet potato', description: 'Magnesium and omega-3s to ease PMS symptoms.' },
+      { name: 'Oat-based bakes', description: 'Slow-release energy to keep your mood steady through the day.' },
+      { name: 'Something chocolatey', description: 'Dark chocolate or a proper dessert. You have earned it.' },
     ],
   },
 ];

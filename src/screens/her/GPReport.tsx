@@ -8,6 +8,7 @@ export default function GPReport() {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [report, setReport] = useState('');
+  const [concerns, setConcerns] = useState('');
   const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
@@ -45,6 +46,7 @@ export default function GPReport() {
         profile,
         medications,
         logs: logs ?? [],
+        concerns: concerns.trim(),
       }),
     });
 
@@ -89,6 +91,17 @@ export default function GPReport() {
                 </ul>
               </div>
             </div>
+          </div>
+
+          <div>
+            <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-2">Your concerns (optional)</p>
+            <textarea
+              value={concerns}
+              onChange={e => setConcerns(e.target.value)}
+              className="w-full px-4 py-3.5 rounded-2xl border border-em-border bg-em-surface text-em-text placeholder:text-em-muted focus:outline-none focus:border-em-rose transition-colors resize-none text-sm leading-relaxed"
+              placeholder="Anything specific you want included or highlighted for your doctor..."
+              rows={3}
+            />
           </div>
 
           {error && (

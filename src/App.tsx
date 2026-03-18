@@ -18,6 +18,7 @@ import PartnerControl from './screens/her/PartnerControl';
 import Medications from './screens/her/Medications';
 import GPReport from './screens/her/GPReport';
 import Journal from './screens/her/Journal';
+import HerRecipes from './screens/her/HerRecipes';
 import Feedback from './screens/Feedback';
 import Admin from './screens/Admin';
 import PartnerDashboard from './screens/partner/Dashboard';
@@ -84,6 +85,7 @@ function App() {
           <Route path="medications" element={<Medications />} />
           <Route path="report" element={<GPReport />} />
           <Route path="journal" element={<Journal />} />
+          <Route path="her-recipes" element={<HerRecipes />} />
           <Route path="feedback" element={<Feedback />} />
           <Route path="admin" element={<Admin />} />
         </Route>

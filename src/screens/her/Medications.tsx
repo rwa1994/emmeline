@@ -15,24 +15,49 @@ export default function Medications() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [medications, setMedications] = useState<Medication[]>([]);
+  const [takenToday, setTakenToday] = useState<string[]>([]);
   const [name, setName] = useState('');
   const [dosage, setDosage] = useState('');
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
 
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
-    if (user) loadMedications();
+    if (user) loadAll();
   }, [user]);
 
-  async function loadMedications() {
-    const { data } = await supabase
-      .from('medications')
-      .select('*')
-      .eq('user_id', user!.id)
-      .eq('active', true)
-      .order('created_at', { ascending: true });
-    setMedications(data ?? []);
+  async function loadAll() {
+    const [{ data: meds }, { data: log }] = await Promise.all([
+      supabase
+        .from('medications')
+        .select('*')
+        .eq('user_id', user!.id)
+        .eq('active', true)
+        .order('created_at', { ascending: true }),
+      supabase
+        .from('daily_logs')
+        .select('medications_taken')
+        .eq('user_id', user!.id)
+        .eq('log_date', today)
+        .single(),
+    ]);
+    setMedications(meds ?? []);
+    setTakenToday(log?.medications_taken ?? []);
     setLoading(false);
+  }
+
+  async function toggleTaken(medName: string) {
+    const updated = takenToday.includes(medName)
+      ? takenToday.filter(n => n !== medName)
+      : [...takenToday, medName];
+
+    setTakenToday(updated);
+
+    await supabase.from('daily_logs').upsert(
+      { user_id: user!.id, log_date: today, medications_taken: updated },
+      { onConflict: 'user_id,log_date' }
+    );
   }
 
   async function addMedication() {
@@ -58,35 +83,55 @@ export default function Medications() {
 
   return (
     <div className="px-6 pt-12 pb-8">
-      <button onClick={() => navigate('/')} className="text-em-muted text-sm mb-6 block">← Back</button>
+      <button onClick={() => navigate(-1)} className="text-em-muted text-sm mb-6 block">← Back</button>
 
       <h1 className="font-heading text-4xl text-em-text mb-2">Medications</h1>
       <p className="text-em-muted text-sm leading-relaxed mb-8">
-        Add anything you take regularly. Em will factor these in when you chat, and you can log whether you've taken them each day.
+        Add anything you take regularly. Toggle to mark taken today.
       </p>
 
-      {/* Current medications */}
+      {/* Current medications with taken-today toggle */}
       {medications.length > 0 && (
         <div className="space-y-2.5 mb-8">
-          {medications.map(med => (
-            <div
-              key={med.id}
-              className="bg-em-surface rounded-2xl px-4 py-3.5 border border-em-border flex items-center gap-3"
-            >
-              <div className="flex-1">
-                <p className="text-sm font-medium text-em-text">{med.name}</p>
-                {med.dosage && (
-                  <p className="text-xs text-em-muted mt-0.5">{med.dosage}</p>
-                )}
-              </div>
-              <button
-                onClick={() => removeMedication(med.id)}
-                className="w-8 h-8 rounded-xl bg-em-rose-light flex items-center justify-center flex-shrink-0"
+          {medications.map(med => {
+            const taken = takenToday.includes(med.name);
+            return (
+              <div
+                key={med.id}
+                className="rounded-2xl px-4 py-3.5 border flex items-center gap-3 transition-all"
+                style={taken
+                  ? { backgroundColor: '#D4E8D1', borderColor: '#8FAF88' }
+                  : { backgroundColor: 'white', borderColor: '#E8DADA' }
+                }
               >
-                <Trash2 size={14} className="text-em-rose-dark" />
-              </button>
-            </div>
-          ))}
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-em-text">{med.name}</p>
+                  {med.dosage && (
+                    <p className="text-xs text-em-muted mt-0.5">{med.dosage}</p>
+                  )}
+                </div>
+
+                {/* Taken today toggle */}
+                <button
+                  onClick={() => toggleTaken(med.name)}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
+                  style={taken
+                    ? { backgroundColor: '#5E8057', color: 'white' }
+                    : { backgroundColor: '#F5F0E8', color: '#9A8080' }
+                  }
+                >
+                  {taken ? 'Taken' : 'Mark taken'}
+                </button>
+
+                <button
+                  onClick={() => removeMedication(med.id)}
+                  className="w-8 h-8 rounded-xl bg-em-rose-light flex items-center justify-center flex-shrink-0"
+                >
+                  <Trash2 size={14} className="text-em-rose-dark" />
+                </button>
+              </div>
+            );
+          })}
         </div>
       )}
 

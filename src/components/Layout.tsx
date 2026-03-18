@@ -1,9 +1,20 @@
-import { Outlet, NavLink } from 'react-router-dom';
-import { Home, Calendar, PenLine, BookOpen, MessageCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Outlet, NavLink, Link } from 'react-router-dom';
+import { Home, Calendar, PenLine, BookOpen, MessageCircle, Menu, X, History, FileText, Users } from 'lucide-react';
 
 export default function Layout() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-svh bg-em-cream">
+      {/* Hamburger button */}
+      <button
+        onClick={() => setMenuOpen(true)}
+        className="fixed top-4 right-4 z-40 w-10 h-10 bg-em-surface border border-em-border rounded-2xl flex items-center justify-center shadow-sm"
+      >
+        <Menu size={18} className="text-em-muted" />
+      </button>
+
       <main className="flex-1 pb-24 overflow-y-auto">
         <Outlet />
       </main>
@@ -17,7 +28,39 @@ export default function Layout() {
           <NavItem to="/chat" icon={<MessageCircle size={20} />} label="Em" />
         </div>
       </nav>
+
+      {/* Menu overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+          <div className="absolute inset-0 bg-black/30" onClick={() => setMenuOpen(false)} />
+          <div className="relative bg-em-surface rounded-t-3xl px-6 pt-5 pb-10 space-y-2">
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-xs font-medium text-em-muted uppercase tracking-widest">More</p>
+              <button onClick={() => setMenuOpen(false)}>
+                <X size={18} className="text-em-muted" />
+              </button>
+            </div>
+            <MenuItem to="/history" icon={<History size={18} />} label="Period history" description="Help Em spot your patterns" onClick={() => setMenuOpen(false)} />
+            <MenuItem to="/report" icon={<FileText size={18} />} label="GP Report" description="Generate a summary for your doctor" onClick={() => setMenuOpen(false)} />
+            <MenuItem to="/partner-control" icon={<Users size={18} />} label="Partner access" description="Invite and manage what they can see" onClick={() => setMenuOpen(false)} />
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+function MenuItem({ to, icon, label, description, onClick }: { to: string; icon: React.ReactNode; label: string; description: string; onClick: () => void }) {
+  return (
+    <Link to={to} onClick={onClick} className="flex items-center gap-4 px-4 py-3.5 rounded-2xl bg-em-cream border border-em-border">
+      <div className="w-9 h-9 rounded-xl bg-em-surface border border-em-border flex items-center justify-center flex-shrink-0 text-em-muted">
+        {icon}
+      </div>
+      <div>
+        <p className="text-sm font-medium text-em-text">{label}</p>
+        <p className="text-xs text-em-muted mt-0.5">{description}</p>
+      </div>
+    </Link>
   );
 }
 

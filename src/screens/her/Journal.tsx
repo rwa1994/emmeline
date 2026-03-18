@@ -75,13 +75,13 @@ export default function Journal() {
 
       <div className="flex items-center justify-between mb-2">
         <h1 className="font-heading text-4xl text-em-text">Journal</h1>
-        {!composing && (
+        {!composing && entries.length > 0 && (
           <button
             onClick={() => setComposing(true)}
             className="w-10 h-10 rounded-2xl flex items-center justify-center"
-            style={{ backgroundColor: phase.bgColor }}
+            style={{ backgroundColor: '#D4E8D1' }}
           >
-            <Plus size={20} style={{ color: phase.color }} />
+            <Plus size={20} style={{ color: '#4A6945' }} />
           </button>
         )}
       </div>
@@ -122,10 +122,13 @@ export default function Journal() {
 
       {/* Entries */}
       {entries.length === 0 && !composing && (
-        <div className="bg-em-surface rounded-2xl px-4 py-8 border border-em-border text-center">
+        <button
+          onClick={() => setComposing(true)}
+          className="w-full bg-em-surface rounded-2xl px-4 py-8 border border-em-border text-center"
+        >
           <p className="text-em-muted text-sm">Nothing written yet.</p>
-          <p className="text-em-muted text-xs mt-1">Tap + to write your first entry.</p>
-        </div>
+          <p className="text-em-muted text-xs mt-1">Tap here to write your first entry.</p>
+        </button>
       )}
 
       <div className="space-y-3">

@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Utensils, Activity, AlertCircle, Heart } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Utensils, Activity, AlertCircle, Heart, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { phases } from '../../lib/phases';
@@ -19,6 +20,10 @@ export default function PhaseGuide() {
   const { currentPhase } = useCycle(profile);
   const [activePhase, setActivePhase] = useState<CyclePhase>(currentPhase);
   const [activeTab, setActiveTab] = useState<Tab>('nutrition');
+
+  useEffect(() => {
+    setActivePhase(currentPhase);
+  }, [currentPhase]);
 
   const phase = phases.find(p => p.phase === activePhase)!;
 
@@ -102,6 +107,19 @@ export default function PhaseGuide() {
           </div>
         ))}
       </div>
+
+      {/* Recipes link on Eat tab */}
+      {activeTab === 'nutrition' && (
+        <Link
+          to="/her-recipes"
+          state={{ phase: activePhase }}
+          className="mt-4 w-full py-3.5 rounded-2xl border-2 flex items-center justify-center gap-2 font-medium text-sm transition-colors"
+          style={{ borderColor: phase.color, color: phase.color }}
+        >
+          See recipe ideas for this phase
+          <ChevronRight size={16} />
+        </Link>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PenLine, MessageCircle, ChevronRight, Droplets, History, Users, Pill, FileText, BookOpen } from 'lucide-react';
+import { PenLine, MessageCircle, ChevronRight, Droplets, Pill, BookOpen } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { getPhase } from '../../lib/phases';
@@ -186,51 +186,6 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Period history */}
-      <Link
-        to="/history"
-        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
-      >
-        <div className="w-9 h-9 rounded-xl bg-em-rose-light flex items-center justify-center flex-shrink-0">
-          <History size={16} className="text-em-rose-dark" />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-em-text">Add period history</p>
-          <p className="text-xs text-em-muted mt-0.5">Help Em spot your patterns</p>
-        </div>
-        <ChevronRight size={16} className="text-em-muted ml-auto" />
-      </Link>
-
-      {/* Journal */}
-      <Link
-        to="/journal"
-        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
-      >
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: phase.bgColor }}>
-          <BookOpen size={16} style={{ color: phase.color }} />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-em-text">Journal</p>
-          <p className="text-xs text-em-muted mt-0.5">A private space to write</p>
-        </div>
-        <ChevronRight size={16} className="text-em-muted ml-auto" />
-      </Link>
-
-      {/* GP Report */}
-      <Link
-        to="/report"
-        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
-      >
-        <div className="w-9 h-9 rounded-xl bg-em-rose-light flex items-center justify-center flex-shrink-0">
-          <FileText size={16} className="text-em-rose-dark" />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-em-text">GP Report</p>
-          <p className="text-xs text-em-muted mt-0.5">Generate a summary for your doctor</p>
-        </div>
-        <ChevronRight size={16} className="text-em-muted ml-auto" />
-      </Link>
-
       {/* Medications */}
       <Link
         to="/medications"
@@ -246,20 +201,6 @@ export default function Dashboard() {
         <ChevronRight size={16} className="text-em-muted ml-auto" />
       </Link>
 
-      {/* Partner access */}
-      <Link
-        to="/partner-control"
-        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
-      >
-        <div className="w-9 h-9 rounded-xl bg-em-lavender-light flex items-center justify-center flex-shrink-0">
-          <Users size={16} className="text-em-lavender-dark" />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-em-text">Partner access</p>
-          <p className="text-xs text-em-muted mt-0.5">Invite and manage what they can see</p>
-        </div>
-        <ChevronRight size={16} className="text-em-muted ml-auto" />
-      </Link>
 
       {/* Feedback */}
       <Link to="/feedback" className="w-full text-center text-xs text-em-muted py-3 block">

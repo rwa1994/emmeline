@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Check, Plus, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 
-interface Medication {
-  id: string;
-  name: string;
-  dosage: string;
-}
 
 const FLOW_OPTIONS = ['Spotting', 'Light', 'Medium', 'Heavy'] as const;
 const PHYSICAL = ['Cramps', 'Bloating', 'Headache', 'Fatigue', 'Breast tenderness', 'Acne', 'Back pain', 'Nausea'];
@@ -51,7 +46,8 @@ export default function Log() {
   const { currentPhase } = useCycle(profile);
   const navigate = useNavigate();
 
-  const [periodActive, setPeriodActive] = useState(currentPhase === 'menstrual');
+  const [periodActive, setPeriodActive] = useState(false);
+  const [periodInitialized, setPeriodInitialized] = useState(false);
   const [flow, setFlow] = useState('');
   const [physical, setPhysical] = useState<string[]>([]);
   const [customPhysical, setCustomPhysical] = useState<string[]>([]);
@@ -61,22 +57,15 @@ export default function Log() {
   const [customEmotionalInput, setCustomEmotionalInput] = useState('');
   const [energy, setEnergy] = useState(3);
   const [notes, setNotes] = useState('');
-  const [medications, setMedications] = useState<Medication[]>([]);
-  const [medicationsTaken, setMedicationsTaken] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      supabase
-        .from('medications')
-        .select('id, name, dosage')
-        .eq('user_id', user.id)
-        .eq('active', true)
-        .order('created_at', { ascending: true })
-        .then(({ data }) => setMedications(data ?? []));
+    if (!periodInitialized && profile) {
+      setPeriodActive(currentPhase === 'menstrual');
+      setPeriodInitialized(true);
     }
-  }, [user]);
+  }, [currentPhase, profile]);
 
   function toggle(list: string[], setList: (v: string[]) => void, item: string) {
     setList(list.includes(item) ? list.filter(s => s !== item) : [...list, item]);
@@ -109,7 +98,6 @@ export default function Log() {
         emotional_symptoms: [...emotional, ...customEmotional],
         energy,
         notes,
-        medications_taken: medicationsTaken,
       },
       { onConflict: 'user_id,log_date' }
     );
@@ -138,7 +126,23 @@ export default function Log() {
   return (
     <div className="px-6 pt-12 pb-8">
       <h1 className="font-heading text-4xl text-em-text mb-1">How are you today?</h1>
-      <p className="text-em-muted text-sm mb-8">{today}</p>
+      <p className="text-em-muted text-sm mb-4">{today}</p>
+
+      {/* Quick links */}
+      <div className="flex gap-2 mb-7">
+        <Link
+          to="/journal"
+          className="flex-1 py-2.5 rounded-2xl border border-em-border bg-em-surface text-em-text text-sm font-medium text-center"
+        >
+          Journal
+        </Link>
+        <Link
+          to="/medications"
+          className="flex-1 py-2.5 rounded-2xl border border-em-border bg-em-surface text-em-text text-sm font-medium text-center"
+        >
+          Medications
+        </Link>
+      </div>
 
       {/* Period toggle */}
       <section className="mb-7">
@@ -281,45 +285,6 @@ export default function Log() {
           <span className="text-xs text-em-muted w-8 text-right">High</span>
         </div>
       </section>
-
-      {/* Medications */}
-      {medications.length > 0 && (
-        <section className="mb-7">
-          <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-3">Medications taken today</p>
-          <div className="space-y-2">
-            {medications.map(med => {
-              const taken = medicationsTaken.includes(med.name);
-              return (
-                <button
-                  key={med.id}
-                  onClick={() => setMedicationsTaken(prev =>
-                    taken ? prev.filter(n => n !== med.name) : [...prev, med.name]
-                  )}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all text-left"
-                  style={taken
-                    ? { backgroundColor: '#D4E8D1', borderColor: '#8FAF88' }
-                    : { backgroundColor: 'white', borderColor: '#E8DADA' }
-                  }
-                >
-                  <div
-                    className="w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all"
-                    style={taken
-                      ? { backgroundColor: '#5E8057', borderColor: '#5E8057' }
-                      : { borderColor: '#E8DADA' }
-                    }
-                  >
-                    {taken && <Check size={12} className="text-white" />}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-em-text">{med.name}</p>
-                    {med.dosage && <p className="text-xs text-em-muted">{med.dosage}</p>}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-      )}
 
       {/* Notes */}
       <section className="mb-8">
