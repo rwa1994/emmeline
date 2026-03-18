@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, Plus, X } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
+
+interface Medication {
+  id: string;
+  name: string;
+  dosage: string;
+}
 
 const FLOW_OPTIONS = ['Spotting', 'Light', 'Medium', 'Heavy'] as const;
 const PHYSICAL = ['Cramps', 'Bloating', 'Headache', 'Fatigue', 'Breast tenderness', 'Acne', 'Back pain', 'Nausea'];
@@ -55,8 +61,22 @@ export default function Log() {
   const [customEmotionalInput, setCustomEmotionalInput] = useState('');
   const [energy, setEnergy] = useState(3);
   const [notes, setNotes] = useState('');
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [medicationsTaken, setMedicationsTaken] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      supabase
+        .from('medications')
+        .select('id, name, dosage')
+        .eq('user_id', user.id)
+        .eq('active', true)
+        .order('created_at', { ascending: true })
+        .then(({ data }) => setMedications(data ?? []));
+    }
+  }, [user]);
 
   function toggle(list: string[], setList: (v: string[]) => void, item: string) {
     setList(list.includes(item) ? list.filter(s => s !== item) : [...list, item]);
@@ -89,6 +109,7 @@ export default function Log() {
         emotional_symptoms: [...emotional, ...customEmotional],
         energy,
         notes,
+        medications_taken: medicationsTaken,
       },
       { onConflict: 'user_id,log_date' }
     );
@@ -260,6 +281,45 @@ export default function Log() {
           <span className="text-xs text-em-muted w-8 text-right">High</span>
         </div>
       </section>
+
+      {/* Medications */}
+      {medications.length > 0 && (
+        <section className="mb-7">
+          <p className="text-xs font-medium text-em-muted uppercase tracking-widest mb-3">Medications taken today</p>
+          <div className="space-y-2">
+            {medications.map(med => {
+              const taken = medicationsTaken.includes(med.name);
+              return (
+                <button
+                  key={med.id}
+                  onClick={() => setMedicationsTaken(prev =>
+                    taken ? prev.filter(n => n !== med.name) : [...prev, med.name]
+                  )}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl border transition-all text-left"
+                  style={taken
+                    ? { backgroundColor: '#D4E8D1', borderColor: '#8FAF88' }
+                    : { backgroundColor: 'white', borderColor: '#E8DADA' }
+                  }
+                >
+                  <div
+                    className="w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all"
+                    style={taken
+                      ? { backgroundColor: '#5E8057', borderColor: '#5E8057' }
+                      : { borderColor: '#E8DADA' }
+                    }
+                  >
+                    {taken && <Check size={12} className="text-white" />}
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-em-text">{med.name}</p>
+                    {med.dosage && <p className="text-xs text-em-muted">{med.dosage}</p>}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Notes */}
       <section className="mb-8">

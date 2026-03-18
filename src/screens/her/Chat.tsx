@@ -5,6 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { sendMessage } from '../../lib/em';
 import { getPhase } from '../../lib/phases';
+import { supabase } from '../../lib/supabase';
 import type { ChatMessage } from '../../types';
 
 export default function Chat() {
@@ -22,11 +23,23 @@ export default function Chat() {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [medications, setMedications] = useState<string[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (profile?.id) {
+      supabase
+        .from('medications')
+        .select('name')
+        .eq('user_id', profile.id)
+        .eq('active', true)
+        .then(({ data }) => setMedications((data ?? []).map(m => m.name)));
+    }
+  }, [profile?.id]);
 
   async function handleSend() {
     if (!input.trim() || loading) return;
@@ -47,7 +60,7 @@ export default function Chat() {
         phase: currentPhase,
         dayOfCycle,
         recentSymptoms: [],
-        medications: [],
+        medications,
         userName: profile?.name ?? 'there',
       });
 
