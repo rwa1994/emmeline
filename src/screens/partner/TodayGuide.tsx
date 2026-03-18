@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Heart, AlertCircle, MessageCircle } from 'lucide-react';
+import { Heart, AlertCircle, MessageCircle, X, Sparkles } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { usePartnerLink } from '../../hooks/usePartnerLink';
 import { useCycle } from '../../hooks/useCycle';
@@ -9,17 +9,24 @@ import type { CyclePhase } from '../../types';
 type Tab = 'help' | 'avoid' | 'say';
 
 export default function TodayGuide() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { herProfile, loading } = usePartnerLink(user?.id);
-  const { currentPhase } = useCycle(herProfile);
+  const { currentPhase, dayOfCycle } = useCycle(herProfile);
   const [activePhase, setActivePhase] = useState<CyclePhase>(currentPhase);
   const [activeTab, setActiveTab] = useState<Tab>('help');
+
+  const [sheetItem, setSheetItem] = useState<string | null>(null);
+  const [aiText, setAiText] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
     if (!loading) setActivePhase(currentPhase);
   }, [loading, currentPhase]);
 
   const phase = getPartnerPhase(activePhase);
+
+  const sharedInterests: string[] = (profile as any)?.shared_interests ?? [];
+  const soloInterests: string[] = (profile as any)?.solo_interests ?? [];
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: 'help', label: 'How to help', icon: <Heart size={14} /> },
@@ -32,6 +39,37 @@ export default function TodayGuide() {
     avoid: phase.whatToAvoid,
     say: phase.thingsToSay,
   };
+
+  async function openSuggestion(item: string) {
+    setSheetItem(item);
+    setAiText('');
+    setAiLoading(true);
+    try {
+      const res = await fetch('/api/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          suggestion: item,
+          phase: activePhase,
+          dayOfCycle,
+          herName: herProfile?.name ?? 'her',
+          sharedInterests,
+          soloInterests,
+          type: 'help',
+        }),
+      });
+      const data = await res.json();
+      setAiText(data.text ?? '');
+    } catch {
+      setAiText('Something went wrong. Please try again.');
+    }
+    setAiLoading(false);
+  }
+
+  function closeSheet() {
+    setSheetItem(null);
+    setAiText('');
+  }
 
   if (loading) return null;
 
@@ -93,12 +131,47 @@ export default function TodayGuide() {
 
       {/* Content */}
       <div className="space-y-2.5">
-        {content[activeTab].map((item, i) => (
-          <div key={i} className="bg-em-surface rounded-2xl px-4 py-3.5 border border-em-border">
-            <p className="text-sm text-em-text leading-relaxed">{item}</p>
-          </div>
-        ))}
+        {content[activeTab].map((item, i) =>
+          activeTab === 'help' ? (
+            <button
+              key={i}
+              onClick={() => openSuggestion(item)}
+              className="w-full bg-em-surface rounded-2xl px-4 py-3.5 border border-em-border text-left flex items-start justify-between gap-3 active:opacity-70 transition-opacity"
+            >
+              <p className="text-sm text-em-text leading-relaxed">{item}</p>
+              <Sparkles size={14} className="flex-shrink-0 mt-0.5" style={{ color: phase.color }} />
+            </button>
+          ) : (
+            <div key={i} className="bg-em-surface rounded-2xl px-4 py-3.5 border border-em-border">
+              <p className="text-sm text-em-text leading-relaxed">{item}</p>
+            </div>
+          )
+        )}
       </div>
+
+      {/* AI suggestion bottom sheet */}
+      {sheetItem && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+          <div className="absolute inset-0 bg-black/40" onClick={closeSheet} />
+          <div className="relative bg-white rounded-t-3xl px-6 pt-5 pb-10 max-h-[80vh] overflow-y-auto">
+            <div className="flex items-start justify-between mb-4">
+              <p className="text-sm font-medium text-em-text pr-6 leading-relaxed">{sheetItem}</p>
+              <button onClick={closeSheet} className="flex-shrink-0 w-8 h-8 rounded-full bg-em-surface flex items-center justify-center">
+                <X size={16} className="text-em-muted" />
+              </button>
+            </div>
+            <div className="w-full h-px bg-em-border mb-4" />
+            {aiLoading ? (
+              <div className="flex items-center gap-3 py-4">
+                <div className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: phase.color, borderTopColor: 'transparent' }} />
+                <p className="text-sm text-em-muted">Getting suggestions...</p>
+              </div>
+            ) : (
+              <p className="text-sm text-em-text leading-relaxed whitespace-pre-wrap">{aiText}</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
