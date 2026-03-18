@@ -109,33 +109,27 @@ export default function Log() {
     if (!user) return;
     setSaving(true);
 
-    const saves: Promise<any>[] = [
-      supabase.from('daily_logs').upsert(
-        {
-          user_id: user.id,
-          log_date: today,
-          flow: periodActive && flow ? flow.toLowerCase() : 'none',
-          physical_symptoms: [...physical, ...customPhysical],
-          emotional_symptoms: [...emotional, ...customEmotional],
-          energy,
-          notes: journalEntry,
-          medications_taken: takenToday,
-        },
-        { onConflict: 'user_id,log_date' }
-      ),
-    ];
+    await supabase.from('daily_logs').upsert(
+      {
+        user_id: user.id,
+        log_date: today,
+        flow: periodActive && flow ? flow.toLowerCase() : 'none',
+        physical_symptoms: [...physical, ...customPhysical],
+        emotional_symptoms: [...emotional, ...customEmotional],
+        energy,
+        notes: journalEntry,
+        medications_taken: takenToday,
+      },
+      { onConflict: 'user_id,log_date' }
+    );
 
     if (journalEntry.trim()) {
-      saves.push(
-        supabase.from('journals').insert({
-          user_id: user.id,
-          content: journalEntry.trim(),
-          phase: currentPhase,
-        })
-      );
+      await supabase.from('journals').insert({
+        user_id: user.id,
+        content: journalEntry.trim(),
+        phase: currentPhase,
+      });
     }
-
-    await Promise.all(saves);
 
     setSaving(false);
     setSaved(true);
