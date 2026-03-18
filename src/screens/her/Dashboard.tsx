@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { PenLine, MessageCircle, ChevronRight, Droplets, History, Users, Pill, FileText } from 'lucide-react';
+import { PenLine, MessageCircle, ChevronRight, Droplets, History, Users, Pill, FileText, BookOpen } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { getPhase } from '../../lib/phases';
@@ -18,6 +18,30 @@ export default function Dashboard() {
   const { currentPhase, dayOfCycle, daysUntilPeriod, cycleProgress } = useCycle(profile);
   const phase = getPhase(currentPhase);
   const [periodStarted, setPeriodStarted] = useState(false);
+  const [moodInsights, setMoodInsights] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!user || !profile?.last_period_start) return;
+    supabase
+      .from('daily_logs')
+      .select('emotional_symptoms')
+      .eq('user_id', user.id)
+      .gte('log_date', profile.last_period_start)
+      .then(({ data }) => {
+        if (!data) return;
+        const counts: Record<string, number> = {};
+        for (const log of data) {
+          for (const s of log.emotional_symptoms ?? []) {
+            counts[s] = (counts[s] ?? 0) + 1;
+          }
+        }
+        const top = Object.entries(counts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 4)
+          .map(([s]) => s);
+        setMoodInsights(top);
+      });
+  }, [user, profile?.last_period_start]);
 
   const radius = 54;
   const circumference = 2 * Math.PI * radius;
@@ -144,6 +168,24 @@ export default function Dashboard() {
           </div>
         </Link>
       </div>
+      {/* Mood insights */}
+      {moodInsights.length > 0 && (
+        <div className="bg-em-surface rounded-3xl p-4 border border-em-border mb-3">
+          <p className="text-[10px] text-em-muted mb-2.5 uppercase tracking-widest font-medium">This cycle, you've most often felt</p>
+          <div className="flex flex-wrap gap-2">
+            {moodInsights.map(mood => (
+              <span
+                key={mood}
+                className="px-3 py-1 rounded-full text-xs font-medium"
+                style={{ backgroundColor: phase.bgColor, color: phase.color }}
+              >
+                {mood}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Period history */}
       <Link
         to="/history"
@@ -155,6 +197,21 @@ export default function Dashboard() {
         <div>
           <p className="text-sm font-medium text-em-text">Add period history</p>
           <p className="text-xs text-em-muted mt-0.5">Help Em spot your patterns</p>
+        </div>
+        <ChevronRight size={16} className="text-em-muted ml-auto" />
+      </Link>
+
+      {/* Journal */}
+      <Link
+        to="/journal"
+        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
+      >
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: phase.bgColor }}>
+          <BookOpen size={16} style={{ color: phase.color }} />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-em-text">Journal</p>
+          <p className="text-xs text-em-muted mt-0.5">A private space to write</p>
         </div>
         <ChevronRight size={16} className="text-em-muted ml-auto" />
       </Link>
