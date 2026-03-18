@@ -16,6 +16,7 @@ import Chat from './screens/her/Chat';
 import ImportHistory from './screens/her/ImportHistory';
 import PartnerControl from './screens/her/PartnerControl';
 import Medications from './screens/her/Medications';
+import GPReport from './screens/her/GPReport';
 import PartnerDashboard from './screens/partner/Dashboard';
 import TodayGuide from './screens/partner/TodayGuide';
 import Recipes from './screens/partner/Recipes';
@@ -78,6 +79,7 @@ function App() {
           <Route path="history" element={<ImportHistory />} />
           <Route path="partner-control" element={<PartnerControl />} />
           <Route path="medications" element={<Medications />} />
+          <Route path="report" element={<GPReport />} />
         </Route>
 
         {/* Partner stream */}

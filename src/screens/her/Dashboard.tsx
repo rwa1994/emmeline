@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PenLine, MessageCircle, ChevronRight, Droplets, History, Users, Pill } from 'lucide-react';
+import { PenLine, MessageCircle, ChevronRight, Droplets, History, Users, Pill, FileText } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCycle } from '../../hooks/useCycle';
 import { getPhase } from '../../lib/phases';
@@ -155,6 +155,21 @@ export default function Dashboard() {
         <div>
           <p className="text-sm font-medium text-em-text">Add period history</p>
           <p className="text-xs text-em-muted mt-0.5">Help Em spot your patterns</p>
+        </div>
+        <ChevronRight size={16} className="text-em-muted ml-auto" />
+      </Link>
+
+      {/* GP Report */}
+      <Link
+        to="/report"
+        className="w-full bg-em-surface rounded-3xl p-4 border border-em-border flex items-center gap-3"
+      >
+        <div className="w-9 h-9 rounded-xl bg-em-rose-light flex items-center justify-center flex-shrink-0">
+          <FileText size={16} className="text-em-rose-dark" />
+        </div>
+        <div>
+          <p className="text-sm font-medium text-em-text">GP Report</p>
+          <p className="text-xs text-em-muted mt-0.5">Generate a summary for your doctor</p>
         </div>
         <ChevronRight size={16} className="text-em-muted ml-auto" />
       </Link>
